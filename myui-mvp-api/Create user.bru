@@ -1,0 +1,19 @@
+meta {
+  name: Create user
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://localhost:1337/api/auth/local/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "florian+2@anywwwhere.com",
+    "username": "florian+2",
+    "password": "123456!"
+  }
+}

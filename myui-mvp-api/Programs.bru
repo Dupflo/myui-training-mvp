@@ -1,0 +1,15 @@
+meta {
+  name: Programs
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:1337/api/programs?populate=*
+  body: none
+  auth: none
+}
+
+params:query {
+  populate: *
+}

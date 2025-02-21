@@ -1,10 +1,18 @@
 import { GalleryVerticalEnd } from "lucide-react"
+import { getCurrentUser } from "./actions/auth"
+import { redirect } from "next/navigation"
 
-export default function AuhtLayout({
+export default async function AuhtLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const user = await getCurrentUser()
+
+  if (user) {
+    redirect("/app/r440p52r8660d5wdc544rov9")
+  }
+
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
       <div className="flex flex-col gap-4 p-6 md:p-10">

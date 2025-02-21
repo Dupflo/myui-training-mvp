@@ -73,6 +73,11 @@
     },
     "birthdate": {
       "type": "date"
+    },
+    "programs": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::program.program"
     }
   }
 }

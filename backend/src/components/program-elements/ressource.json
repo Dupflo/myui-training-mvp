@@ -1,0 +1,38 @@
+{
+  "collectionName": "components_program_elements_ressources",
+  "info": {
+    "displayName": "Ressource",
+    "icon": "folder",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "link": {
+      "type": "string"
+    },
+    "icon": {
+      "type": "enumeration",
+      "enum": [
+        "Livre",
+        "Haltère",
+        "PDF",
+        "Excel",
+        "Facebook"
+      ]
+    },
+    "media": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "files",
+        "images",
+        "videos",
+        "audios"
+      ]
+    }
+  }
+}

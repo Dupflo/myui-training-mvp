@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_program_models_ressources",
+  "info": {
+    "displayName": "Ressources",
+    "icon": "archive",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "resources": {
+      "displayName": "Ressource",
+      "type": "component",
+      "repeatable": true,
+      "component": "program-elements.ressource"
+    },
+    "title": {
+      "type": "string"
+    }
+  }
+}

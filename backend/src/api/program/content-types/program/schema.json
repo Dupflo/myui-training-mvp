@@ -4,7 +4,8 @@
   "info": {
     "singularName": "program",
     "pluralName": "programs",
-    "displayName": "Program"
+    "displayName": "Program",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -25,12 +26,21 @@
       "type": "decimal"
     },
     "image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images",
         "files"
+      ]
+    },
+    "program_model": {
+      "type": "dynamiczone",
+      "components": [
+        "program-models.modules",
+        "program-models.ressources"
       ],
-      "type": "media",
-      "multiple": false
+      "min": 1
     }
   }
 }

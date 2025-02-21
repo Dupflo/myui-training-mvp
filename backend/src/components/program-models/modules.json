@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_program_models_modules",
+  "info": {
+    "displayName": "Modules",
+    "icon": "apps",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "modules": {
+      "displayName": "Module",
+      "type": "component",
+      "repeatable": true,
+      "component": "program-blocks.module"
+    },
+    "title": {
+      "type": "string"
+    }
+  }
+}

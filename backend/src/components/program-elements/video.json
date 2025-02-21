@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_program_elements_videos",
+  "info": {
+    "displayName": "Video",
+    "icon": "play",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "media": {
+      "type": "customField",
+      "customField": "plugin::video-field.video"
+    }
+  }
+}

@@ -29,7 +29,7 @@ export function LoginForm({
 
   useEffect(() => {
     if (state && state.success) {
-      router.push("/profile")
+      router.push("/app/yec6f7nxucoqpx63yopl5ezf")
     }
   }, [state, router])
 

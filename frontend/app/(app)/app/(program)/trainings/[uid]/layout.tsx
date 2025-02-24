@@ -1,5 +1,5 @@
 import { getCurrentUser } from "@/app/(auth)/actions/auth"
-import { AppSidebar } from "@/components/app-sidebar"
+import { AppSidebar } from "./sidebar"
 import ProgramBreadcrumb from "@/components/ui/program-breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import {

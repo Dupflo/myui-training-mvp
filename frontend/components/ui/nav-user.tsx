@@ -7,6 +7,7 @@ import {
   CreditCard,
   LogOut,
   Sparkles,
+  User,
 } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -25,6 +26,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import Link from "next/link"
+import { navMain } from "@/lib/data"
 
 export function NavUser({
   user,
@@ -91,14 +94,15 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Mon compte
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Mes factures
-              </DropdownMenuItem>
+              {navMain.map((item) => (
+                <Link key={item.title} href={item.url}>
+                  <DropdownMenuItem>
+                    <item.icon />
+                    {item.title}
+                  </DropdownMenuItem>
+                </Link>
+              ))}
+
               {/* <DropdownMenuItem>
                 <Bell />
                 Notifications

@@ -63,7 +63,10 @@ export function VersionSwitcher({
             align="start"
           >
             {programs.map((program) => (
-              <Link key={program.id} href={`/app/${program.documentId}`}>
+              <Link
+                key={program.id}
+                href={`/app/trainings/${program.documentId}`}
+              >
                 <DropdownMenuItem>
                   {program.title}
 

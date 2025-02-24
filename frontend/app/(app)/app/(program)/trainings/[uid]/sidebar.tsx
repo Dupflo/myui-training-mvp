@@ -1,16 +1,8 @@
 "use client"
 
 import * as React from "react"
-import {
-  Camera,
-  CameraIcon,
-  ChevronRight,
-  CirclePlay,
-  PlaySquare,
-  Video,
-} from "lucide-react"
+import { ChevronRight, CirclePlay } from "lucide-react"
 
-import { SearchForm } from "@/components/search-form"
 import { VersionSwitcher } from "@/components/version-switcher"
 import {
   Collapsible,
@@ -37,9 +29,9 @@ import {
   Video as VideoProps,
 } from "@/contexts/program-context"
 import Link from "next/link"
-import { hexToRgbCssVariable, isDarkBackground } from "@/utils"
 import { cn } from "@/lib/utils"
-import { NavRessources } from "./nav-resources"
+import { NavRessources } from "../../../../../../components/nav-resources"
+import { useSearchParams } from "next/navigation"
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   programs: any // Remplacez 'any' par le type approprié si vous le connaissez
@@ -48,7 +40,8 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 
 export function AppSidebar(props: AppSidebarProps) {
   const { programs, user, ...restProps } = props
-  const { program, selectedVideo, selectModule } = useProgram()
+  const { program, selectedVideo } = useProgram()
+  const searchParams = useSearchParams()
   const [openCollapsible, setOpenCollapsible] = React.useState<Module | null>(
     null
   )
@@ -75,7 +68,11 @@ export function AppSidebar(props: AppSidebarProps) {
               key={module.title}
               title={module.title}
               className="group/collapsible"
-              open={openCollapsible?.id === module.id}
+              open={
+                openCollapsible?.id === module.id ||
+                moduleIndex === Number(searchParams?.get("module")) ||
+                (moduleIndex === 0 && !searchParams.has("module"))
+              }
             >
               <SidebarGroup>
                 <SidebarGroupLabel

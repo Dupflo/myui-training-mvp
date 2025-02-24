@@ -373,7 +373,7 @@ export interface ApiProgramProgram extends Struct.CollectionTypeSchema {
   collectionName: 'programs';
   info: {
     description: '';
-    displayName: 'Program';
+    displayName: 'Programmes';
     pluralName: 'programs';
     singularName: 'program';
   };
@@ -381,7 +381,6 @@ export interface ApiProgramProgram extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    content: Schema.Attribute.RichText;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

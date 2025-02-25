@@ -393,6 +393,7 @@ export interface ApiProgramProgram extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     price: Schema.Attribute.Decimal;
+    product_id: Schema.Attribute.String;
     program_model: Schema.Attribute.DynamicZone<
       ['program-models.modules', 'program-models.ressources']
     > &
@@ -900,6 +901,8 @@ export interface PluginUsersPermissionsUser
       'manyToOne',
       'plugin::users-permissions.role'
     >;
+    stripe_connect_id: Schema.Attribute.String;
+    stripe_customer_id: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

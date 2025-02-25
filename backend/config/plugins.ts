@@ -17,4 +17,8 @@ export default ({ env }) => ({
             },
         },
     },
+    'strapi-plugin-stripe-connect': {
+        enabled: true,
+        resolve: './src/plugins/strapi-plugin-stripe-connect'
+    },
 });

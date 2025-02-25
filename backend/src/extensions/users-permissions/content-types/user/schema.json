@@ -78,6 +78,12 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::program.program"
+    },
+    "stripe_connect_id": {
+      "type": "string"
+    },
+    "stripe_customer_id": {
+      "type": "string"
     }
   }
 }

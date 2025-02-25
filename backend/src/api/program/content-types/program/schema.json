@@ -38,6 +38,9 @@
         "program-models.ressources"
       ],
       "min": 1
+    },
+    "product_id": {
+      "type": "string"
     }
   }
 }

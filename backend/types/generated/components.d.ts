@@ -36,7 +36,7 @@ export interface ProgramElementsRessource extends Struct.ComponentSchema {
         {
           filter: [''];
           output: 'svg';
-          selection: ['Livre', 'PDF'];
+          selection: [''];
         }
       >;
     link: Schema.Attribute.String;

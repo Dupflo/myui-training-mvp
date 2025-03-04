@@ -41,6 +41,12 @@
     },
     "product_id": {
       "type": "string"
+    },
+    "connected_accounts": {
+      "displayName": "Connected Account",
+      "type": "component",
+      "repeatable": true,
+      "component": "stripe.connected-account"
     }
   }
 }

@@ -1,15 +1,6 @@
 "use client"
 
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-  User,
-} from "lucide-react"
-
+import { signOut } from "@/app/(auth)/actions/auth"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
@@ -26,8 +17,11 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import Link from "next/link"
 import { navMain } from "@/lib/data"
+import { ChevronsUpDown, LogOut, Sparkles } from "lucide-react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { Badge } from "./badge"
 
 export function NavUser({
   user,
@@ -39,6 +33,12 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  const router = useRouter()
+
+  const handleSignOut = async () => {
+    await signOut()
+    router.push("/login")
+  }
 
   return (
     <SidebarMenu>
@@ -52,13 +52,26 @@ export function NavUser({
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.avatar} alt={user.name} />
                 <AvatarFallback className="rounded-lg">
-                  {user.firstname.charAt(0)}
-                  {user.lastname.charAt(0)}
+                  {!user.firstname ? (
+                    user.email?.charAt(0)
+                  ) : (
+                    <>
+                      {user.firstname?.charAt(0)}
+                      {user.lastname?.charAt(0)}
+                    </>
+                  )}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {user.firstname} {user.lastname}
+                  {!user.firstname ? (
+                    user.email
+                  ) : (
+                    <>
+                      {user.firstname}
+                      {user.lastname}
+                    </>
+                  )}
                 </span>
                 <span className="truncate text-xs">{user.email}</span>
               </div>
@@ -75,11 +88,27 @@ export function NavUser({
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">
+                    {!user.firstname ? (
+                      user.email?.charAt(0)
+                    ) : (
+                      <>
+                        {user.firstname?.charAt(0)}
+                        {user.lastname?.charAt(0)}
+                      </>
+                    )}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
-                    {user.firstname} {user.lastname}
+                    {!user.firstname ? (
+                      user.email
+                    ) : (
+                      <>
+                        {user.firstname}
+                        {user.lastname}
+                      </>
+                    )}
                   </span>
                   <span className="truncate text-xs">{user.email}</span>
                 </div>
@@ -87,18 +116,21 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Découvrir d&apos;autres programmes
-              </DropdownMenuItem>
+              <Link href="/programs">
+                <DropdownMenuItem>
+                  <Sparkles />
+                  Découvrir d&apos;autres programmes
+                </DropdownMenuItem>
+              </Link>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               {navMain.map((item) => (
                 <Link key={item.title} href={item.url}>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem disabled={!item.enable}>
                     <item.icon />
                     {item.title}
+                    {!item.enable && <Badge variant="outline">Bientôt</Badge>}
                   </DropdownMenuItem>
                 </Link>
               ))}
@@ -109,7 +141,7 @@ export function NavUser({
               </DropdownMenuItem> */}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleSignOut}>
               <LogOut />
               Se déconnecter
             </DropdownMenuItem>

@@ -3,7 +3,7 @@ import { Video } from "@/contexts/program-context"
 export default function VideoPlayer({ video }: { video: Video }) {
   if (video.media.provider === "vimeo") {
     return (
-      <div className="max-w-4xl mx-auto shadow">
+      <div className="w-full mx-auto shadow">
         <iframe
           src={`https://player.vimeo.com/video/${video.media.providerUid}?autoplay=1&title=0&byline=0&portrait=0`}
           allow="autoplay; fullscreen; picture-in-picture"

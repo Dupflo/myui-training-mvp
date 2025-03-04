@@ -1,84 +1,149 @@
 "use client"
 
-import { useActionState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { useFormStatus } from "react-dom"
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import type React from "react"
-import { login } from "@/app/(auth)/actions/auth"
+import { cn } from "@/lib/utils"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { ReactNode, useActionState, useEffect, useState } from "react"
+import { useFormStatus } from "react-dom"
 
-function SubmitButton() {
+interface FieldProps {
+  label: string
+  link?: boolean
+}
+
+interface AuthFormProps {
+  title: string
+  description: string
+  fields: {
+    firstname?: FieldProps
+    lastname?: FieldProps
+    email?: FieldProps
+    password?: FieldProps
+    hidden?: { name: string; value: string }
+  }
+  buttonLabel: string
+  action: (prevState: unknown, formData: FormData) => Promise<unknown>
+  bottom?: {
+    label?: string
+    action: {
+      name: string
+      link: string
+    }
+  }
+  actionRedirectUrl?: string
+  confirmationMessage?: ReactNode
+}
+
+function SubmitButton({ label }: { label: AuthFormProps["buttonLabel"] }) {
   const { pending } = useFormStatus()
   return (
     <Button type="submit" className="w-full" disabled={pending}>
-      {pending ? "Connexion..." : "Se connecter"}
+      {pending ? "Patientez..." : label}
     </Button>
   )
 }
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<"form">) {
-  const [state, formAction] = useActionState(login, null)
+export function AuthForm({
+  title,
+  description,
+  action,
+  fields,
+  buttonLabel,
+  bottom,
+  actionRedirectUrl,
+  confirmationMessage,
+}: AuthFormProps) {
+  const [success, setSuccess] = useState(false)
+  const [state, formAction] = useActionState(action, null)
+
   const router = useRouter()
 
   useEffect(() => {
-    if (state && state.success) {
-      router.push("/app/yec6f7nxucoqpx63yopl5ezf")
+    if ((state as { success: boolean })?.success) {
+      setSuccess(true)
+      console.log(actionRedirectUrl)
+      if (actionRedirectUrl) {
+        router.push(actionRedirectUrl)
+      }
     }
-  }, [state, router])
+  }, [state])
 
+  if (success && confirmationMessage) return confirmationMessage
   return (
-    <form
-      className={cn("flex flex-col gap-6", className)}
-      action={formAction}
-      {...props}
-    >
+    <form className={cn("flex flex-col gap-6")} action={formAction}>
       <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-bold">Accédez à votre compte</h1>
+        <h1 className="text-2xl font-bold">{title}</h1>
         <p className="text-balance text-sm text-muted-foreground">
-          Entrez votre email ci-dessous pour vous connecter à votre compte
+          {description}
         </p>
       </div>
       <div className="grid gap-6">
-        <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            name="identifier"
-            type="email"
-            placeholder="m@example.com"
-            required
-          />
-        </div>
-        <div className="grid gap-2">
-          <div className="flex items-center">
-            <Label htmlFor="password">Mot de passe</Label>
-            <Link
-              href="#"
-              className="ml-auto text-sm underline-offset-4 hover:underline"
-            >
-              Mot de passe oublié ?
-            </Link>
+        {fields.firstname && (
+          <div className="grid gap-2">
+            <Label htmlFor="firstname">{fields.firstname.label}</Label>
+            <Input id="firstname" name="firstname" type="text" required />
           </div>
-          <Input id="password" name="password" type="password" required />
-        </div>
-        <SubmitButton />
+        )}
+        {fields.lastname && (
+          <div className="grid gap-2">
+            <Label htmlFor="lastname">{fields.lastname.label}</Label>
+            <Input id="lastname" name="lastname" type="text" required />
+          </div>
+        )}
+        {fields.email && (
+          <div className="grid gap-2">
+            <Label htmlFor="email">{fields.email.label}</Label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="m@example.com"
+              required
+            />
+          </div>
+        )}
+        {fields.password && (
+          <div className="grid gap-2">
+            <div className="flex items-center">
+              <Label htmlFor="password">{fields.password.label}</Label>
+              {fields.password.link && (
+                <Link
+                  href="/forgot-password"
+                  className="ml-auto text-sm underline-offset-4 hover:underline"
+                >
+                  Mot de passe oublié ?
+                </Link>
+              )}
+            </div>
+            <Input id="password" name="password" type="password" required />
+          </div>
+        )}
+        {fields.hidden && (
+          <Input
+            type="hidden"
+            name={fields.hidden.name}
+            value={fields.hidden.value}
+          />
+        )}
+        <SubmitButton label={buttonLabel} />
         {state && state.error && (
           <p className="text-sm text-red-500">{state.error}</p>
         )}
       </div>
-      <div className="text-center text-sm">
-        Vous n&apos;avez pas de compte ?{" "}
-        <Link href="/register" className="underline underline-offset-4">
-          S&apos;inscrire
-        </Link>
-      </div>
+      {bottom && (
+        <div className="text-center text-sm">
+          {bottom.label && `${bottom.label}${" "}`}
+          <Link
+            href={bottom.action.link}
+            className="underline underline-offset-4"
+          >
+            {bottom.action.name}
+          </Link>
+        </div>
+      )}
     </form>
   )
 }

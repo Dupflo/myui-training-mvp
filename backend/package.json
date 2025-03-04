@@ -22,6 +22,8 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.0.0",
+    "strapi-plugin-icons-field": "file:.yalc/strapi-plugin-icons-field",
+    "strapi-provider-email-brevo": "^1.0.4",
     "stripe": "^13.4.0",
     "styled-components": "^6.0.0"
   },
@@ -32,8 +34,8 @@
     "typescript": "^5"
   },
   "engines": {
-    "node": "20.18.0",
-    "npm": "10.8.2"
+    "node": "20.11.1",
+    "npm": "10.2.4"
   },
   "strapi": {
     "uuid": "d9c3f624-bba7-484b-9205-6e49ac61f7f2"

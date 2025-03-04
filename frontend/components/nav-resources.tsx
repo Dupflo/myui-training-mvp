@@ -1,16 +1,5 @@
 "use client"
-import {
-  type LucideIcon,
-  Book,
-  Dumbbell,
-  FileText,
-  LucideFacebook,
-  Link2,
-  Sheet,
-  Download,
-  ExternalLink,
-  Loader,
-} from "lucide-react"
+import { Download, ExternalLink, Loader } from "lucide-react"
 // import {
 //   DropdownMenu,
 //   DropdownMenuContent,
@@ -25,18 +14,10 @@ import {
   // SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
 import { useState } from "react"
-
-const iconMapping: Record<string, LucideIcon> = {
-  Livre: Book,
-  Haltère: Dumbbell,
-  PDF: FileText,
-  Excel: Sheet,
-  Facebook: LucideFacebook,
-}
+import Icon from "./icon"
 
 export function NavRessources({
   title,
@@ -46,7 +27,7 @@ export function NavRessources({
   projects: {
     name: string
     url: string
-    icon: LucideIcon
+    icon: string
   }[]
 }) {
   const [loading, setLoading] = useState<string | null>(null)
@@ -56,7 +37,6 @@ export function NavRessources({
       <SidebarGroupLabel>{title}</SidebarGroupLabel>
       <SidebarMenu>
         {projects.map((item) => {
-          const IconComponent = iconMapping[item.icon] || Link2
           return (
             <SidebarMenuItem key={item.id}>
               <SidebarMenuButton asChild>
@@ -85,7 +65,7 @@ export function NavRessources({
                       }
                     }}
                   >
-                    <IconComponent />
+                    <Icon icon={item.icon} />
                     <span>{item.title}</span>
                     {loading && loading === item.media?.documentId ? (
                       <Loader className="!size-4 animate-spin ml-auto" />

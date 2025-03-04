@@ -1,8 +1,5 @@
 "use client"
 
-import * as React from "react"
-import { Check, ChevronsUpDown, GalleryVerticalEnd, Lock } from "lucide-react"
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,8 +12,9 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { Program } from "@/contexts/program-context"
-import { Button } from "./ui/button"
+import { Check, ChevronsUpDown, GalleryVerticalEnd, Lock } from "lucide-react"
 import Link from "next/link"
+import * as React from "react"
 
 export function VersionSwitcher({
   title,
@@ -29,8 +27,6 @@ export function VersionSwitcher({
   programs: string[]
   defaultVersion: string
 }) {
-  const [selectedVersion, setSelectedVersion] = React.useState(defaultVersion)
-
   const hasProgram = React.useCallback(
     (program: Program) =>
       user.programs.find(

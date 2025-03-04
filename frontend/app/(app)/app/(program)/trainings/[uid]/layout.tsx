@@ -1,5 +1,4 @@
 import { getCurrentUser } from "@/app/(auth)/actions/auth"
-import { AppSidebar } from "./sidebar"
 import ProgramBreadcrumb from "@/components/ui/program-breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import {
@@ -10,6 +9,7 @@ import {
 import { Program, ProgramProvider } from "@/contexts/program-context"
 import { fetchCMS } from "@/utils/fetchers"
 import { redirect } from "next/navigation"
+import { AppSidebar } from "./sidebar"
 
 export default async function Page({
   params,
@@ -18,18 +18,23 @@ export default async function Page({
   params: { uid: string }
   children: React.ReactNode
 }) {
-  const program = await fetchCMS({ path: `programs/${params.uid}` })
+  const { uid } = await params
+  const program = await fetchCMS({ path: `programs/${uid}` })
   const programs = await fetchCMS({ path: `programs` })
 
   const user = await getCurrentUser()
 
   if (!user) {
-    redirect("/login")
+    redirect(`/register?redirectTo=/programs/${uid}/buy`)
   }
 
   const hasProgram = user.programs.find(
-    (userProgram: Program) => userProgram.documentId === params.uid
+    (userProgram: Program) => userProgram.documentId === uid
   )
+
+  if (!hasProgram) {
+    redirect(`/programs/${uid}/buy`)
+  }
 
   if (hasProgram && program && programs)
     return (
@@ -43,7 +48,7 @@ export default async function Page({
         >
           <AppSidebar programs={programs} user={user} />
           <SidebarInset>
-            <header className="flex sticky top-0 bg-background h-16 shrink-0 items-center gap-2 border-b px-4">
+            <header className="flex sticky top-0 bg-background h-10 md:h-16 shrink-0 items-center gap-2 border-b px-4">
               <SidebarTrigger className="-ml-1" />
               <Separator orientation="vertical" className="mr-2 h-4" />
               <ProgramBreadcrumb />

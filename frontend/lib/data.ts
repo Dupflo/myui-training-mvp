@@ -23,6 +23,7 @@ export const navMain = [
         //       url: "#",
         //     },
         //   ],
+        enable: false,
     },
     {
         title: "Mes Factures",
@@ -46,5 +47,6 @@ export const navMain = [
         //       url: "#",
         //     },
         //   ],
+        enable: false,
     },
 ]

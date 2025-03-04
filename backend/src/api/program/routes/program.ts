@@ -1,7 +1,19 @@
-/**
- * program router
- */
-
-import { factories } from '@strapi/strapi';
-
-export default factories.createCoreRouter('api::program.program');
+export default {
+  routes: [
+    {
+      method: "GET",
+      path: "/programs",
+      handler: "program.find",
+    },
+    {
+      method: "GET",
+      path: "/programs/:id",
+      handler: "program.findOne",
+    },
+    {
+      method: "POST",
+      path: "/programs/:id/checkout",
+      handler: "program.checkout",
+    },
+  ],
+};

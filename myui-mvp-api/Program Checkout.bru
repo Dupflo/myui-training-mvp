@@ -1,11 +1,15 @@
 meta {
   name: Program Checkout
   type: http
-  seq: 3
+  seq: 7
 }
 
 post {
-  url: http://localhost:1337/api/program/price_1MotwRLkdIwHu7ixYcPLm5uZ/checkout
+  url: http://localhost:1337/api/program/yec6f7nxucoqpx63yopl5ezf/checkout
   body: none
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: 2bc7ab1fd4f4e7310566e275f93d585edb161b8cc4f47106750b8a395fd7a032ffd294348bac6a25a2bbb96e666ba34f0ddc750eafd2252a26be77525d078c7e5a83c54c4b0d43a9843e7d637c13dd4f8ddf6b6caf3aa3635bd2dfe6b0bc6d65ff59f5432c81af47e996940bddb1d3116cdb665d8175f49e36147714f01c37d0
 }

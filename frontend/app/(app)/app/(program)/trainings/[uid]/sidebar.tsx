@@ -1,14 +1,12 @@
 "use client"
 
-import * as React from "react"
-import { ChevronRight, CirclePlay } from "lucide-react"
-
-import { VersionSwitcher } from "@/components/version-switcher"
+import Logo from "@/components/logo.png"
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
+import { NavUser } from "@/components/ui/nav-user"
 import {
   Sidebar,
   SidebarContent,
@@ -21,17 +19,20 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  useSidebar,
 } from "@/components/ui/sidebar"
-import { NavUser } from "@/components/ui/nav-user"
+import { VersionSwitcher } from "@/components/version-switcher"
 import {
   Module,
   useProgram,
   Video as VideoProps,
 } from "@/contexts/program-context"
-import Link from "next/link"
 import { cn } from "@/lib/utils"
+import { ChevronRight, CirclePlay } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
+import * as React from "react"
 import { NavRessources } from "../../../../../../components/nav-resources"
-import { useSearchParams } from "next/navigation"
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   programs: any // Remplacez 'any' par le type approprié si vous le connaissez
@@ -41,7 +42,7 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 export function AppSidebar(props: AppSidebarProps) {
   const { programs, user, ...restProps } = props
   const { program, selectedVideo } = useProgram()
-  const searchParams = useSearchParams()
+  const { setOpenMobile } = useSidebar()
   const [openCollapsible, setOpenCollapsible] = React.useState<Module | null>(
     null
   )
@@ -49,6 +50,13 @@ export function AppSidebar(props: AppSidebarProps) {
   return (
     <Sidebar {...restProps}>
       <SidebarHeader>
+        <Image
+          src={Logo}
+          alt="logo"
+          className="mx-auto px-2 w-36"
+          quality={100}
+          draggable={false}
+        />
         <VersionSwitcher
           user={user}
           title={program?.title}
@@ -68,11 +76,7 @@ export function AppSidebar(props: AppSidebarProps) {
               key={module.title}
               title={module.title}
               className="group/collapsible"
-              open={
-                openCollapsible?.id === module.id ||
-                moduleIndex === Number(searchParams?.get("module")) ||
-                (moduleIndex === 0 && !searchParams.has("module"))
-              }
+              open={openCollapsible?.id === module.id}
             >
               <SidebarGroup>
                 <SidebarGroupLabel
@@ -109,6 +113,10 @@ export function AppSidebar(props: AppSidebarProps) {
                           <SidebarMenuItem
                             key={video.title}
                             className={videoIndex === 0 ? "mt-1" : ""}
+                            onClick={() => {
+                              console.log("hello")
+                              setOpenMobile(false)
+                            }}
                           >
                             <SidebarMenuButton
                               asChild
@@ -118,6 +126,12 @@ export function AppSidebar(props: AppSidebarProps) {
                                 href={`?module=${moduleIndex}&video=${videoIndex}`}
                               >
                                 <CirclePlay /> {video.title}
+                                {video.color && (
+                                  <div
+                                    className="w-5 h-5 rounded-full mr-2 outline outline-1 outline-gray-200"
+                                    style={{ backgroundColor: module.color }}
+                                  />
+                                )}
                               </Link>
                             </SidebarMenuButton>
                           </SidebarMenuItem>

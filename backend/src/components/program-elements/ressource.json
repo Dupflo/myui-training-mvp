@@ -13,16 +13,6 @@
     "link": {
       "type": "string"
     },
-    "icon": {
-      "type": "enumeration",
-      "enum": [
-        "Livre",
-        "Haltère",
-        "PDF",
-        "Excel",
-        "Facebook"
-      ]
-    },
     "media": {
       "type": "media",
       "multiple": false,
@@ -33,6 +23,20 @@
         "videos",
         "audios"
       ]
+    },
+    "icon": {
+      "type": "customField",
+      "options": {
+        "output": "svg",
+        "filter": [
+          ""
+        ],
+        "selection": [
+          "Livre",
+          "PDF"
+        ]
+      },
+      "customField": "plugin::icons-field.icon"
     }
   }
 }

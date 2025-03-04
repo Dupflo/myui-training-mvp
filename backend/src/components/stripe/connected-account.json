@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_stripe_connected_accounts",
+  "info": {
+    "displayName": "Connected Account",
+    "icon": "user",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "account": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "fee_amount": {
+      "type": "decimal"
+    }
+  }
+}

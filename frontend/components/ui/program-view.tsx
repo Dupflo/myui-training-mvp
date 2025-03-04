@@ -12,13 +12,14 @@ export default function ProgramView() {
   if (program && selectedVideo && selectedModule)
     return (
       <div className="flex h-screen max-w-5xl w-full mx-auto ">
-        <main className="flex-1 px-6 py-2 overflow-auto text-center">
+        <main className="flex-1 md:px-6 py-2 overflow-auto text-center">
           <div className="space-y-6">
-            <h1 className="text-4xl font-semibold mb-2">
+            <h1 className="text-xl md:text-4xl font-semibold mb-2">
               {selectedVideo.title}
             </h1>
+            {selectedVideo.media && <VideoPlayer video={selectedVideo} />}
             {selectedModule.description && (
-              <div className="prose bg-sidebar p-5 rounded-md">
+              <div className="text-left w-full max-w-full prose bg-sidebar p-5 rounded-md">
                 <Markdown
                   rehypePlugins={[rehypeRaw]}
                   remarkPlugins={[remarkGfm]}
@@ -27,7 +28,6 @@ export default function ProgramView() {
                 </Markdown>
               </div>
             )}
-            <VideoPlayer video={selectedVideo} />
           </div>
         </main>
       </div>

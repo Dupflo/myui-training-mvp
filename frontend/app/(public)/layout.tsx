@@ -1,6 +1,3 @@
-import Header from "@/components/header"
-import Footer from "@/components/footer"
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -8,11 +5,9 @@ export default function RootLayout({
 }>) {
   return (
     <>
-      <Header />
-      <main className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-40">
+      <main className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-20">
         {children}
       </main>
-      <Footer />
     </>
   )
 }

@@ -12,6 +12,7 @@ export type Video = {
     provider: string
     providerUid: string
   }
+  color: string
 }
 
 export type Module = {

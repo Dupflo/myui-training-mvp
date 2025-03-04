@@ -30,9 +30,15 @@ export interface ProgramElementsRessource extends Struct.ComponentSchema {
     icon: 'folder';
   };
   attributes: {
-    icon: Schema.Attribute.Enumeration<
-      ['Livre', 'Halt\u00E8re', 'PDF', 'Excel', 'Facebook']
-    >;
+    icon: Schema.Attribute.Text &
+      Schema.Attribute.CustomField<
+        'plugin::icons-field.icon',
+        {
+          filter: [''];
+          output: 'svg';
+          selection: ['Livre', 'PDF'];
+        }
+      >;
     link: Schema.Attribute.String;
     media: Schema.Attribute.Media<'files' | 'images' | 'videos' | 'audios'>;
     title: Schema.Attribute.String;
@@ -79,6 +85,22 @@ export interface ProgramModelsRessources extends Struct.ComponentSchema {
   };
 }
 
+export interface StripeConnectedAccount extends Struct.ComponentSchema {
+  collectionName: 'components_stripe_connected_accounts';
+  info: {
+    description: '';
+    displayName: 'Connected Account';
+    icon: 'user';
+  };
+  attributes: {
+    account: Schema.Attribute.Relation<
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+    fee_amount: Schema.Attribute.Decimal;
+  };
+}
+
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
@@ -87,6 +109,7 @@ declare module '@strapi/strapi' {
       'program-elements.video': ProgramElementsVideo;
       'program-models.modules': ProgramModelsModules;
       'program-models.ressources': ProgramModelsRessources;
+      'stripe.connected-account': StripeConnectedAccount;
     }
   }
 }

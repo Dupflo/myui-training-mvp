@@ -6,6 +6,11 @@
     },
     "icons-field": {
       "signature": "c46f82f31ed01d553af2b9d246eaf476"
+    },
+    "strapi-plugin-stripe-connect": {
+      "signature": "acda61acad8c461bebad973fb373b285",
+      "file": true,
+      "replaced": "link:.yalc/strapi-plugin-stripe-connect"
     }
   }
 }

@@ -24,6 +24,7 @@
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.0.0",
     "strapi-plugin-icons-field": "file:.yalc/strapi-plugin-icons-field",
+    "strapi-plugin-stripe-connect": "file:.yalc/strapi-plugin-stripe-connect",
     "strapi-provider-email-brevo": "^1.0.4",
     "stripe": "^13.4.0",
     "styled-components": "^6.0.0"

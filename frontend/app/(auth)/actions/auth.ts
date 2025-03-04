@@ -3,7 +3,7 @@
 import { loginSchema, registerSchema, resetPasswordLinkSchema, resetPasswordSchema } from "@/lib/validations/auth"
 import { cookies } from "next/headers"
 
-const STRAPI_URL = process.env.STRAPI_URL || "http://localhost:1337"
+const STRAPI_URL = process.env.API_URL || "http://localhost:1337"
 
 export async function register(prevState: unknown, formData: FormData) {
   const cookiesList = await cookies()

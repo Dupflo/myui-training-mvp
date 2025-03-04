@@ -33,11 +33,11 @@ export default {
             email: event.params.data.email,
           })
           event.params.data.customer_id = customer.id
-          if (!event.params.data.role?.connect[0].id) { event.params.data.role = 4 }
+          if (!event.params.data.role?.connect?.[0].id) { event.params.data.role = 4 }
         }
 
         /** SETUP CONNECT ID **/
-        if (!event.params.data.connect_id && event.params.data.role?.connect[0].id === 3) {
+        if (!event.params.data.connect_id && event.params.data.role?.connect?.[0].id === 3) {
           const account = await stripe.accounts.create({
             controller: {
               stripe_dashboard: {

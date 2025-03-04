@@ -48,7 +48,8 @@ export async function register(prevState: unknown, formData: FormData) {
       return { error: "Un compte existe déjà avec ces identifiants" }
     }
   } catch (error) {
-    return { error: "Une erreur est survenue lors de la connexion" }
+    console.error(error)
+    return { error: "Une erreur est survenue lors d'inscription" }
   }
 }
 

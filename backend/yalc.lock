@@ -8,7 +8,7 @@
       "signature": "c46f82f31ed01d553af2b9d246eaf476"
     },
     "strapi-plugin-stripe-connect": {
-      "signature": "acda61acad8c461bebad973fb373b285",
+      "signature": "5e9a075e2a5db693f5224f5449e8e7f1",
       "file": true,
       "replaced": "link:.yalc/strapi-plugin-stripe-connect"
     }

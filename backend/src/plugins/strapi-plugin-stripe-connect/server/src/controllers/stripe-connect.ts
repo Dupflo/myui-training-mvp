@@ -12,8 +12,8 @@ const stripeConnect = ({ strapi }: { strapi: Core.Strapi }) => ({
     try {
       const accountLink = await stripe.accountLinks.create({
         account: account,
-        refresh_url: `http://localhost:1337/admin/content-manager/collection-types/plugin::users-permissions.user/${account.documentId}`,
-        return_url: `http://localhost:1337/admin/content-manager/collection-types/plugin::users-permissions.user/${account.documentId}`,
+        refresh_url: `${process.env.APP_URL}/admin/content-manager/collection-types/plugin::users-permissions.user/${account.documentId}`,
+        return_url: `${process.env.APP_URL}/admin/content-manager/collection-types/plugin::users-permissions.user/${account.documentId}`,
         type: "account_onboarding",
       });
 

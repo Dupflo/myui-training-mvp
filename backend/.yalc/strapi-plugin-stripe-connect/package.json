@@ -54,5 +54,5 @@
   "description": "This plugin seamlessly integrates Stripe Connect functionality into your Strapi V5 admin panel. It adds a convenient \"Connect to Stripe\" button to the user content type, allowing for easy onboarding of users as Stripe Connect accounts.",
   "license": "MIT",
   "author": "Florian Dupuis <florian@anywwwhere.com>",
-  "yalcSig": "acda61acad8c461bebad973fb373b285"
+  "yalcSig": "5e9a075e2a5db693f5224f5449e8e7f1"
 }

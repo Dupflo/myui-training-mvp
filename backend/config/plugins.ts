@@ -43,7 +43,6 @@ export default ({ env }) => ({
   },
   'icons-field': {
     enabled: true,
-    resolve: './src/plugins/strapi-plugin-icons-field',
     config: {
       icons: [
         {

@@ -23,7 +23,7 @@ export async function register(prevState: unknown, formData: FormData) {
   }
 
   try {
-    const response = await fetch(`${STRAPI_URL}/api/auth/local/register`, {
+    const response = await fetch(`${STRAPI_URL}/auth/local/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(validatedFields.data),
@@ -70,7 +70,7 @@ export async function login(prevState: unknown, formData: FormData) {
   const { identifier, password } = validatedFields.data
 
   try {
-    const response = await fetch(`${STRAPI_URL}/api/auth/local`, {
+    const response = await fetch(`${STRAPI_URL}/auth/local`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ identifier, password }),
@@ -106,7 +106,7 @@ export async function getCurrentUser() {
   }
 
   try {
-    const response = await fetch(`${STRAPI_URL}/api/users/me`, {
+    const response = await fetch(`${STRAPI_URL}/users/me`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -149,7 +149,7 @@ export async function sendResetPasswordLink(_: unknown, formData: FormData) {
 
     const { email } = validatedFields.data
 
-    const response = await fetch(`${STRAPI_URL}/api/auth/forgot-password`, {
+    const response = await fetch(`${STRAPI_URL}/auth/forgot-password`, {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
@@ -189,7 +189,7 @@ export async function resetPasswordAndSignIn(_: unknown, formData: FormData) {
       }
     }
 
-    const response = await fetch(`${STRAPI_URL}/api/auth/reset-password`, {
+    const response = await fetch(`${STRAPI_URL}/auth/reset-password`, {
 
       method: 'POST',
       headers: { "Content-Type": "application/json" },

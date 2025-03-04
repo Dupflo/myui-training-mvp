@@ -4,6 +4,7 @@
   "private": true,
   "description": "A Strapi application",
   "scripts": {
+    "prebuild": "cd src/plugins/strapi-plugin-stripe-connect && npm run build",
     "build": "strapi build",
     "deploy": "strapi deploy",
     "develop": "strapi develop",

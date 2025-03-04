@@ -6,10 +6,10 @@ import controllers from './server/src/controllers';
 import register from './server/src/register';
 import routes from './server/src/routes';
 
-export default {
+export default ({
   register,
   config,
   controllers,
   contentTypes,
   routes,
-};
+});

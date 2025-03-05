@@ -66,8 +66,8 @@ export default factories.createCoreController('api::program.program', ({ strapi 
     const defaultPrice = prices.data.find(price => price.id === prices.data[0].id)
 
     const sessionData: any = {
-      success_url: `${process.env.APP_URL}/app/trainings/${ctx.params.id}`,
-      cancel_url: process.env.APP_URL,
+      success_url: `${process.env.FRONTEND_URL}/app/trainings/${ctx.params.id}`,
+      cancel_url: process.env.FRONTEND_URL,
       allow_promotion_codes: true,
       customer: customerId,
       line_items: [

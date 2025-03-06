@@ -1,10 +1,10 @@
 "use client"
 
-import VideoPlayer from "./video-player"
 import { useProgram } from "@/contexts/program-context"
 import Markdown from "react-markdown"
 import rehypeRaw from "rehype-raw"
 import remarkGfm from "remark-gfm"
+import VideoPlayer from "./video-player"
 
 export default function ProgramView() {
   const { program, selectedModule, selectedVideo } = useProgram()
@@ -19,7 +19,7 @@ export default function ProgramView() {
             </h1>
             {selectedVideo.media && <VideoPlayer video={selectedVideo} />}
             {selectedModule.description && (
-              <div className="text-left w-full max-w-full prose bg-sidebar p-5 rounded-md">
+              <div className="text-center w-full max-w-full prose bg-sidebar p-5 rounded-md">
                 <Markdown
                   rehypePlugins={[rehypeRaw]}
                   remarkPlugins={[remarkGfm]}

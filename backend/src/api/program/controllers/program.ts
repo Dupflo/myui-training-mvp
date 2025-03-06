@@ -60,6 +60,8 @@ export default factories.createCoreController('api::program.program', ({ strapi 
       }
     }, contentType, { auth: ctx.state.auth });
 
+    console.log(ctx.query)
+
     const program: any = await strapi.documents(contentType.uid).findFirst(sanitizedQueryParams);
 
     const prices = await stripe.prices.list({ product: program.product_id, });
@@ -79,10 +81,20 @@ export default factories.createCoreController('api::program.program', ({ strapi 
       mode: 'payment',
     };
 
+    if (ctx.query.coupon) {
+      sessionData.allow_promotion_codes = undefined
+      sessionData.discounts = []
+      sessionData.discounts.push({ coupon: ctx.query.coupon })
+    }
+    if (ctx.query.promotion_code) {
+      sessionData.allow_promotion_codes = undefined
+      sessionData.discounts = []
+      sessionData.discouns.push({ promotion_code: ctx.query.promotion_code })
+    }
     // Ajouter payment_intent_data uniquement si program.connected_accounts > 0
     if (program.connected_accounts.length > 0) {
       sessionData.payment_intent_data = {
-        application_fee_amount: Math.floor(defaultPrice.unit_amount * (1 - program.connected_accounts[0].fee_amount / 100)),
+        application_fee_amount: Math.floor(defaultPrice.unit_amount * (1 - (program.connected_accounts[0].fee_amount + (ctx.query.coupon ? 5 : 0)) / 100)),
         transfer_data: {
           destination: program.connected_accounts[0].account.connect_id
         },

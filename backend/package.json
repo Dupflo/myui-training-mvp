@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@_sh/strapi-plugin-ckeditor": "^5.0.1",
+    "@notionhq/client": "^2.2.16",
     "@sklinet/strapi-plugin-video-field": "^1.1.0",
     "@strapi/plugin-cloud": "5.10.3",
     "@strapi/plugin-color-picker": "^5.10.3",

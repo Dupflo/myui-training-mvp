@@ -17,7 +17,7 @@ export default async function Home() {
         quality={100}
         draggable={false}
       />
-      <h1 className="text-2xl md:text-4xl font-bold text-center">
+      <h1 className="text-2xl md:text-4xl font-bold text-center ">
         Découvrez nos programmes
       </h1>
       <p className="text-center text-xl md:text-2xl font-medium">

@@ -27,7 +27,7 @@ export default async function NotionPage({
           />
         </div>
       )}
-      <article className="prose-xl prose-p:my-2 prose-h3:my-5 prose-li:my-1.5 mx-auto mb-16 flex w-full max-w-4xl flex-col items-start justify-center">
+      <article className="prose-xl p-4 prose-p:my-2 prose-h3:my-5 prose-li:my-1.5 mx-auto mb-16 flex w-full max-w-4xl flex-col items-start justify-center">
         {!page.content.info.cover && (
           <h1 className="z-10 relative my-20 text-3xl font-bold tracking-tight text-black md:text-5xl">
             {page.content.info.properties.title.title[0].plain_text}

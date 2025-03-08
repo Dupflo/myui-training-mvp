@@ -38,7 +38,8 @@ export default function SetPasswordPageClient({ user }) {
               🚀 Paiement validé ! Encore une petite étape
             </h1>
             <h2 className="text-lg md:text-2xl font-semibold">
-              Nous avons besoin que tu créer un mot de passe 🔐
+              Pour accéder à ton espace d&lsquo;entrainement, nous avons besoin
+              que tu créer un mot de passe 🔐
             </h2>
             <p className="text-md md:text-lg font-semibold">
               Si tu ne le fais pas maintenant, tu devras demander un lien de

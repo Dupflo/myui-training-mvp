@@ -41,9 +41,12 @@ export default {
             )) as any
 
             const tempPassword = generatePassword();
+            const splittedName = customer.name.split(" ")
             user = await strapi.documents('plugin::users-permissions.user').create({
               data: {
                 username: customer.email,
+                firstname: splittedName[0],
+                lastname: splittedName[1],
                 email: customer.email,
                 customer_id: customer.id,
                 password: tempPassword,

@@ -45,7 +45,7 @@ export default function SetPasswordPageClient({ user }) {
               réinitialisation de mot de passe pour pouvoir te reconnecter 😅.
             </p>
             <p className="text-md md:text-lg font-semibold">
-              Alors, accorde toi ces quelques secondes 🙂
+              Alors, accorde-toi ces quelques secondes 🙂
             </p>
             <Input
               id="password"

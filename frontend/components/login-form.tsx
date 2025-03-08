@@ -64,7 +64,6 @@ export function AuthForm({
   useEffect(() => {
     if ((state as { success: boolean })?.success) {
       setSuccess(true)
-      console.log(actionRedirectUrl)
       if (actionRedirectUrl) {
         router.push(actionRedirectUrl)
       }

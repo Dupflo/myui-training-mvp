@@ -36,7 +36,7 @@ export default function SignUser({ user }) {
         />
         <div>
           {state.error && (
-            <div className="flex flex-wrap mb-3 relative justify-between lg:justify-center items-center">
+            <div className="flex flex-wrap mb-5 relative justify-between lg:justify-center items-center">
               <p className=" text-red-600">{state.error}</p>
               <Link
                 href="/forgot-password"

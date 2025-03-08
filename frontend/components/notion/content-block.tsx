@@ -4,6 +4,7 @@
 
 import type React from "react"
 import { useState } from "react"
+import { FadeIn, FadeInStagger } from "../fade-in"
 import CountdownTimer from "./countdown-timer"
 import CustomButton from "./custom-button"
 import ImageLightbox from "./image-lightbox"
@@ -57,8 +58,6 @@ export const RenderBlocks: React.FC<RenderBlocksProps> = ({ blocks }) => {
         attributes[attrMatch[1]] = attrMatch[2]
       }
 
-      console.log(attributes)
-
       // Add the appropriate component based on shortcode type
       if (shortcodeType === "button") {
         const buttonText = attributes.name || "Click"
@@ -111,7 +110,7 @@ export const RenderBlocks: React.FC<RenderBlocksProps> = ({ blocks }) => {
   }
 
   return (
-    <>
+    <FadeIn>
       {lightbox && (
         <ImageLightbox
           src={lightbox.src || "/placeholder.svg"}
@@ -302,7 +301,7 @@ export const RenderBlocks: React.FC<RenderBlocksProps> = ({ blocks }) => {
             return <div key={id}>{`Unsupported block (${type})`}</div>
         }
       })}
-    </>
+    </FadeIn>
   )
 }
 
@@ -313,9 +312,9 @@ const ColumnList: React.FC<{ block: Block }> = ({ block }) => {
   return (
     <div className="flex flex-col gap-10 md:flex-row">
       {block.children.map((column) => (
-        <div key={column.id} className="flex-1">
+        <FadeInStagger key={column.id} className="flex-1">
           {column.children && <RenderBlocks blocks={column.children} />}
-        </div>
+        </FadeInStagger>
       ))}
     </div>
   )

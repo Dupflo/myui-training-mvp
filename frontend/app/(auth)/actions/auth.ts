@@ -1,6 +1,8 @@
 'use server'
 
 import { loginSchema, registerSchema, resetPasswordLinkSchema, resetPasswordSchema } from "@/lib/validations/auth";
+import { fetchCMS } from "@/utils/fetchers";
+import console from "console";
 import { cookies } from "next/headers";
 
 const STRAPI_URL = process.env.API_URL || "http://localhost:1337"
@@ -91,7 +93,7 @@ export async function login(prevState: unknown, formData: FormData) {
 
     if (response.ok) {
       const data = await response.json()
-      console.log(data)
+
       const { jwt } = data
 
       // Stocker le JWT dans un cookie HttpOnly
@@ -107,6 +109,7 @@ export async function login(prevState: unknown, formData: FormData) {
       return { error: "Identifiants invalides" }
     }
   } catch (error) {
+    console.log(error)
     return { error: "Une erreur est survenue lors de la connexion" }
   }
 }
@@ -209,6 +212,46 @@ export async function checkIfUserExist(formData: FormData) {
   }
 }
 
+export async function loggedUserFromSession(session_id: string) {
+  try {
+    const response = await fetch(`${STRAPI_URL}/users?session_id=${session_id}`, {
+      headers: { "Content-Type": "application/json" }
+    })
+    const user = await response.json()
+
+    const formData = new FormData();
+    formData.append("email", user.email);
+    formData.append("password", user.temp_password);
+
+    const loginResponse = await login(null, formData);
+    console.log(loginResponse)
+    return loginResponse;
+  } catch (error) {
+    return error
+  }
+}
+
+/*** MUST BE REMOVED FOR SECURITY */
+
+export async function loggedUserFromEmail(email: string) {
+  try {
+    const response = await fetch(`${STRAPI_URL}/users?email=${email}`, {
+      headers: { "Content-Type": "application/json" }
+    })
+    const user = await response.json()
+
+    const formData = new FormData();
+    formData.append("email", user.email);
+    formData.append("password", user.temp_password);
+
+    const loginResponse = await login(null, formData);
+    return loginResponse;
+  } catch (error) {
+    return error
+  }
+}
+
+
 
 
 export async function sendResetPasswordLink(_: unknown, formData: FormData) {
@@ -231,8 +274,6 @@ export async function sendResetPasswordLink(_: unknown, formData: FormData) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
     })
-
-    console.log(response)
 
     if (!response.ok) {
       throw new Error("Failed to send reset link")
@@ -297,3 +338,17 @@ export async function resetPasswordAndSignIn(_: unknown, formData: FormData) {
   }
 }
 
+
+export async function generateCheckoutPage({ programId, email, customerId }: { programId: string, email?: string, customerId?: string }) {
+  try {
+    console.log(programId)
+    const checkoutPage = await fetchCMS({
+      path: `programs/${programId}/checkout`,
+      method: "POST",
+      body: { customerId, email },
+    })
+    return checkoutPage
+  } catch (error) {
+    return error
+  }
+}

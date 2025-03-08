@@ -17,6 +17,10 @@ const ImageLightbox: React.FC<LightboxProps> = ({ src, alt, onClose }) => {
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
   const [hasMoved, setHasMoved] = useState(false)
   const imageRef = useRef<HTMLImageElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  // Zoom level
+  const zoomScale = 2
 
   // Reset position when zoom state changes
   useEffect(() => {
@@ -60,13 +64,10 @@ const ImageLightbox: React.FC<LightboxProps> = ({ src, alt, onClose }) => {
           const offsetY = (e.clientY - rect.top) / rect.height
 
           // Calculate position to center the zoom on click point
-          const newX = (0.5 - offsetX) * rect.width
-          const newY = (0.5 - offsetY) * rect.height
+          const newX = ((0.5 - offsetX) * rect.width) / 2
+          const newY = ((0.5 - offsetY) * rect.height) / 2
 
-          setPosition({
-            x: Math.max(Math.min(newX, rect.width / 2), -rect.width / 2),
-            y: Math.max(Math.min(newY, rect.height / 2), -rect.height / 2),
-          })
+          setPosition({ x: newX, y: newY })
         }
       } else {
         // When already zoomed, clicking zooms out
@@ -87,7 +88,7 @@ const ImageLightbox: React.FC<LightboxProps> = ({ src, alt, onClose }) => {
   }
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (isDragging && isZoomed && imageRef.current) {
+    if (isDragging && isZoomed) {
       // Set hasMoved to true if the mouse has moved more than a few pixels
       const moveThreshold = 5 // pixels
       const deltaX = Math.abs(e.clientX - dragStart.x - position.x)
@@ -97,17 +98,17 @@ const ImageLightbox: React.FC<LightboxProps> = ({ src, alt, onClose }) => {
         setHasMoved(true)
       }
 
-      const rect = imageRef.current.getBoundingClientRect()
-      const maxX = rect.width
-      const maxY = rect.height
-
-      // Calculate new position with boundaries
+      // Calculate new position
       const newX = e.clientX - dragStart.x
       const newY = e.clientY - dragStart.y
 
+      // Get the boundaries
+      const bounds = getBoundaries()
+
+      // Apply constraints
       setPosition({
-        x: Math.max(Math.min(newX, maxX), -maxX),
-        y: Math.max(Math.min(newY, maxY), -maxY),
+        x: Math.max(bounds.minX, Math.min(bounds.maxX, newX)),
+        y: Math.max(bounds.minY, Math.min(bounds.maxY, newY)),
       })
 
       e.preventDefault()
@@ -115,9 +116,41 @@ const ImageLightbox: React.FC<LightboxProps> = ({ src, alt, onClose }) => {
     }
   }
 
+  // Function to calculate boundaries
+  const getBoundaries = () => {
+    if (!imageRef.current || !containerRef.current) {
+      return { minX: -50, maxX: 50, minY: -50, maxY: 50 }
+    }
+
+    const imageRect = imageRef.current.getBoundingClientRect()
+    const containerRect = containerRef.current.getBoundingClientRect()
+
+    // Calculate the maximum allowed movement in each direction
+    // This is based on the size difference between the zoomed image and the container
+    const zoomedWidth = imageRect.width * zoomScale
+    const zoomedHeight = imageRect.height * zoomScale
+
+    // The maximum distance the image can be moved is half the difference
+    // between the zoomed size and the container size
+    const maxX = Math.max(
+      0,
+      (zoomedWidth - containerRect.width) / (2 * zoomScale)
+    )
+    const maxY = Math.max(
+      0,
+      (zoomedHeight - containerRect.height) / (2 * zoomScale)
+    )
+
+    return {
+      minX: -maxX,
+      maxX: maxX,
+      minY: -maxY,
+      maxY: maxY,
+    }
+  }
+
   const handleMouseUp = () => {
     setIsDragging(false)
-    // hasMoved state is maintained until the next mousedown
   }
 
   // Handle touch events for mobile
@@ -134,7 +167,7 @@ const ImageLightbox: React.FC<LightboxProps> = ({ src, alt, onClose }) => {
   }
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (isDragging && isZoomed && e.touches.length === 1 && imageRef.current) {
+    if (isDragging && isZoomed && e.touches.length === 1) {
       // Set hasMoved to true if the touch has moved more than a few pixels
       const moveThreshold = 5 // pixels
       const deltaX = Math.abs(e.touches[0].clientX - dragStart.x - position.x)
@@ -144,16 +177,17 @@ const ImageLightbox: React.FC<LightboxProps> = ({ src, alt, onClose }) => {
         setHasMoved(true)
       }
 
-      const rect = imageRef.current.getBoundingClientRect()
-      const maxX = rect.width
-      const maxY = rect.height
-
+      // Calculate new position
       const newX = e.touches[0].clientX - dragStart.x
       const newY = e.touches[0].clientY - dragStart.y
 
+      // Get the boundaries
+      const bounds = getBoundaries()
+
+      // Apply constraints
       setPosition({
-        x: Math.max(Math.min(newX, maxX), -maxX),
-        y: Math.max(Math.min(newY, maxY), -maxY),
+        x: Math.max(bounds.minX, Math.min(bounds.maxX, newX)),
+        y: Math.max(bounds.minY, Math.min(bounds.maxY, newY)),
       })
 
       e.preventDefault()
@@ -203,28 +237,31 @@ const ImageLightbox: React.FC<LightboxProps> = ({ src, alt, onClose }) => {
         </button>
 
         <div
+          ref={containerRef}
           className="overflow-hidden"
           style={{
             cursor: isZoomed ? (isDragging ? "grabbing" : "grab") : "zoom-in",
           }}
         >
-          <img
-            ref={imageRef}
-            src={src || "/placeholder.svg"}
-            alt={alt}
-            className="max-w-full max-h-[85vh] object-contain transition-transform"
-            style={{
-              transform: isZoomed
-                ? `scale(2) translate(${position.x}px, ${position.y}px)`
-                : "scale(1)",
-              transformOrigin: "center",
-              transition: isDragging ? "none" : "transform 0.2s ease-out",
-            }}
-            onClick={handleImageClick}
-            onMouseDown={handleMouseDown}
-            onTouchStart={handleTouchStart}
-            draggable={false}
-          />
+          <div className="relative">
+            <img
+              ref={imageRef}
+              src={src || "/placeholder.svg"}
+              alt={alt}
+              className="max-w-full max-h-[85vh] object-contain transition-transform"
+              style={{
+                transform: isZoomed
+                  ? `scale(${zoomScale}) translate(${position.x}px, ${position.y}px)`
+                  : "scale(1)",
+                transformOrigin: "center",
+                transition: isDragging ? "none" : "transform 0.2s ease-out",
+              }}
+              onClick={handleImageClick}
+              onMouseDown={handleMouseDown}
+              onTouchStart={handleTouchStart}
+              draggable={false}
+            />
+          </div>
         </div>
 
         {alt && <div className="mt-2 text-center text-white">{alt}</div>}

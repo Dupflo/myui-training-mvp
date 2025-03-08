@@ -1,3 +1,7 @@
+import Stripe from "stripe";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, null)
+
 export default function (plugin) {
   const sanitizeOutput = (user) => {
     const {
@@ -23,7 +27,13 @@ export default function (plugin) {
 
   plugin.controllers.user.find = async (ctx) => {
     try {
-      const { email } = ctx.query
+      let email = ctx.query.email
+
+      if (!email) {
+        const session = await stripe.checkout.sessions.retrieve(ctx.query.session_id);
+        const customer: any = await stripe.customers.retrieve(session.customer as string);
+        email = customer.email
+      }
 
       const existingUser = await strapi.documents(contentType).findFirst({
         filters: { email }

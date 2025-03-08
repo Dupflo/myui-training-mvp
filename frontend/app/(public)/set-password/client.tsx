@@ -5,7 +5,6 @@ import { FadeIn, FadeInStagger } from "@/components/fade-in"
 import Logo from "@/components/logo.png"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@radix-ui/react-label"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useActionState } from "react"
@@ -23,27 +22,32 @@ export default function SetPasswordPageClient({ user }) {
 
   return (
     <main className="flex flex-col h-screen ">
-      <FadeInStagger className="max-w-2xl mx-auto py-20 space-y-10 my-auto p-4 md:p-0">
+      <FadeInStagger className="max-w-3xl mx-auto py-20 space-y-10 my-auto p-4 md:p-0">
         <FadeIn>
           <Image
             src={Logo}
             alt="logo"
-            className="w-24"
+            className="w-40 mx-auto"
             quality={100}
             draggable={false}
           />
         </FadeIn>
         <FadeIn>
-          <form className="space-y-8 text-center" action={formAction}>
-            <h3 className="text-lg md:text-xl font-semibold mb-5 text-slate-400">
-              Il existe déjà un compte pour cet utilisateur
-            </h3>
-            <Label
-              htmlFor="password"
-              className="text-lg md:text-2xl font-semibold"
-            >
-              Saisissez votre mot de passe
-            </Label>
+          <form className="space-y-5 text-center" action={formAction}>
+            <h1 className="text-lg md:text-4xl font-semibold mb-5">
+              🚀 Encore une petite étape
+            </h1>
+            <h2 className="text-lg md:text-2xl font-semibold">
+              Nous avons besoin que tu créer un mot de passe 🔐
+            </h2>
+            <p className="text-md md:text-lg font-semibold">
+              Si tu ne le fais pas maintenant et que tu te déconnectes, tu
+              n&lsquo;auras pas le choix que de demander un lien de
+              réinitialisation de mot de passe 😔.
+            </p>
+            <p className="text-md md:text-lg font-semibold">
+              Alors, accorde toi ces quelques secondes 🙂
+            </p>
             <Input
               id="password"
               name="password"
@@ -51,13 +55,14 @@ export default function SetPasswordPageClient({ user }) {
               className="text-center"
               required
               placeholder=" Entrez votre mot de passe"
+              size="lg"
             />
             <Button
               type="submit"
               className="w-full uppercase font-semibold"
               size="lg"
             >
-              Se connecter et passer au paiement
+              Valider mon mot de passe
             </Button>
           </form>
         </FadeIn>

@@ -51,7 +51,7 @@ export default factories.createCoreController('api::program.program', ({ strapi 
   },
   async checkout(ctx) {
     const { sanitize } = strapi.contentAPI;
-    const { customerId } = ctx.request.body
+    const { customerId, email } = ctx.request.body
     const contentType = strapi.contentType("api::program.program")
     const sanitizedQueryParams = await sanitize.query({
       populate: { program_model, connected_accounts: { populate: { account: true } } },
@@ -65,11 +65,15 @@ export default factories.createCoreController('api::program.program', ({ strapi 
     const prices = await stripe.prices.list({ product: program.product_id, });
     const defaultPrice = prices.data.find(price => price.id === prices.data[0].id)
 
+
     const sessionData: any = {
-      success_url: `${process.env.FRONTEND_URL}/app/trainings/${ctx.params.id}`,
+      success_url: `${process.env.FRONTEND_URL}/checkout/${ctx.params.id}?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.FRONTEND_URL}/programs`,
       allow_promotion_codes: true,
-      customer: customerId,
+      payment_intent_data: {
+        setup_future_usage: true
+      },
+      customer_email: email,
       line_items: [
         {
           price: defaultPrice.id,
@@ -78,6 +82,14 @@ export default factories.createCoreController('api::program.program', ({ strapi 
       ],
       mode: 'payment',
     };
+
+    if (customerId) {
+      sessionData.customer = customerId
+    }
+    else if (email) {
+      sessionData.customer_email = email
+      sessionData.customer_creation = "always"
+    }
 
     if (ctx.query.coupon) {
       sessionData.allow_promotion_codes = undefined

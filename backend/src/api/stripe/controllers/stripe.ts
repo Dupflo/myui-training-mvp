@@ -2,29 +2,57 @@ import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, null)
 
+const generatePassword = () => {
+  let pass = '';
+  let str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+    'abcdefghijklmnopqrstuvwxyz0123456789@#$';
+
+  for (let i = 1; i <= 8; i++) {
+    let char = Math.floor(Math.random()
+      * str.length + 1);
+
+    pass += str.charAt(char)
+  }
+
+  return pass;
+};
+
 export default {
   webhookListener: async (ctx, next) => {
-
-
-    console.log('hello')
     try {
       switch (ctx.request.body.type) {
         case "checkout.session.completed": {
           const session = ctx.request.body.data;
+          let user
 
           const expandedSession = await stripe.checkout.sessions.retrieve(
             session.object.id, {
             expand: ['line_items']
           });
 
-          console.log(session.object.customer)
-
-          const user = await strapi.documents("plugin::users-permissions.user").findFirst({
+          user = await strapi.documents("plugin::users-permissions.user").findFirst({
             filters: { customer_id: session.object.customer },
             populate: { programs: true }
           });
 
-          console.log(user)
+          if (!user) {
+            const customer = (await stripe.customers.retrieve(
+              session.object.customer
+            )) as any
+
+            const tempPassword = generatePassword();
+            user = await strapi.documents('plugin::users-permissions.user').create({
+              data: {
+                username: customer.email,
+                email: customer.email,
+                customer_id: customer.id,
+                password: tempPassword,
+                temp_password: tempPassword,
+                confirmed: true,
+                provider: "local",
+              }
+            })
+          }
 
           const programId = expandedSession.line_items.data[0].price.product;
 
@@ -38,7 +66,6 @@ export default {
 
 
           const program = await strapi.documents(programContentType.uid).findFirst(sanitizedQueryParams);
-          console.log(program)
 
           await strapi.documents("plugin::users-permissions.user").update({
             documentId: user.documentId,

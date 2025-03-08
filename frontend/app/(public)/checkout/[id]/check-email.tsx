@@ -1,18 +1,27 @@
-import { checkIfUserExist, register } from "@/app/(auth)/actions/auth"
+import {
+  checkIfUserExist,
+  generateCheckoutPage,
+} from "@/app/(auth)/actions/auth"
 import { FadeIn } from "@/components/fade-in"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useRouter } from "next/navigation"
 import { useActionState } from "react"
 
-export default function CheckEmail({ setUser }: any) {
+export default function CheckEmail({ programId, setUser }: any) {
+  const router = useRouter()
   const [, formAction] = useActionState(
     async (state: void, formData: FormData) => {
       const user = await checkIfUserExist(formData)
       if (user.email) {
         setUser(user)
       } else {
-        await register(null, formData)
+        const checkoutPage = await generateCheckoutPage({
+          programId,
+          email: formData.get("email") as string,
+        })
+        router.push(checkoutPage.url)
       }
       // const response = await checkIfUserExist()
       // console.log(response)

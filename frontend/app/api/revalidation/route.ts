@@ -9,6 +9,11 @@ export async function POST(req: Request) {
       revalidateTag(`landing-page:${entry.slug}`)
       console.info(`landing-page ${entry.slug} revalidée`)
       break
+    case 'program':
+      revalidateTag(entry.documentId)
+      revalidateTag(`program`)
+      console.info(`program ${entry.title} revalidée`)
+      break
     default:
       revalidateTag(model)
       console.info(`${model} revalidé`)

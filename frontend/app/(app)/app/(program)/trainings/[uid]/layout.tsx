@@ -19,8 +19,8 @@ export default async function Page({
   children: React.ReactNode
 }) {
   const { uid } = await params
-  const program = await fetchCMS({ path: `programs/${uid}` })
-  const programs = await fetchCMS({ path: `programs` })
+  const program = await fetchCMS({ path: `programs/${uid}`, tags: [uid] })
+  const programs = await fetchCMS({ path: `programs`, tags: ["programs"] })
 
   const user = await getCurrentUser()
 

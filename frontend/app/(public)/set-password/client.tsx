@@ -41,9 +41,8 @@ export default function SetPasswordPageClient({ user }) {
               Nous avons besoin que tu créer un mot de passe 🔐
             </h2>
             <p className="text-md md:text-lg font-semibold">
-              Si tu ne le fais pas maintenant et que tu te déconnectes, tu
-              n&lsquo;auras pas le choix que de demander un lien de
-              réinitialisation de mot de passe 😔.
+              Si tu ne le fais pas maintenant, tu devras demander un lien de
+              réinitialisation de mot de passe pour pouvoir te reconnecter 😅.
             </p>
             <p className="text-md md:text-lg font-semibold">
               Alors, accorde toi ces quelques secondes 🙂

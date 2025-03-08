@@ -8,8 +8,6 @@ export const defaultSchema = {
 }
 
 export const registerSchema = z.object({
-  firstname: z.string(),
-  lastname: z.string(),
   email: defaultSchema.email,
   username: z.string().min(3, "Le nom d'utilisateur doit contenir au moins 6 caractères"),
   password: defaultSchema.password,

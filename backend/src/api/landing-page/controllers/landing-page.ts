@@ -43,7 +43,7 @@ export default factories.createCoreController('api::landing-page.landing-page', 
     const contentType = strapi.contentType('api::landing-page.landing-page');
     await validate.query(ctx.query, contentType, { auth: ctx.state.auth });
     const sanitizedQueryParams = await sanitize.query({
-      populate: "*",
+      populate: { program_direct_link: { populate: { program: true } } },
       filters: {
         slug: {
           $eq: ctx.params.slug,

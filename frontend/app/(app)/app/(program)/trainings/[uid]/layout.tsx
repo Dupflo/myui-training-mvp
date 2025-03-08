@@ -25,7 +25,11 @@ export default async function Page({
   const user = await getCurrentUser()
 
   if (!user) {
-    redirect(`/register?redirectTo=/programs/${uid}/buy`)
+    redirect(`/checkout/${uid}`)
+  }
+
+  if (!user.createdPassword) {
+    redirect(`/set-password?redirectTo=/app/trainings/${uid}`)
   }
 
   const hasProgram = user.programs.find(
@@ -33,7 +37,7 @@ export default async function Page({
   )
 
   if (!hasProgram) {
-    redirect(`/programs/${uid}/buy`)
+    redirect(`/checkout/${uid}`)
   }
 
   if (hasProgram && program && programs)
@@ -58,5 +62,5 @@ export default async function Page({
         </SidebarProvider>
       </ProgramProvider>
     )
-  return <p>Nada</p>
+  return null
 }

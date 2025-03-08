@@ -84,6 +84,13 @@
     },
     "customer_id": {
       "type": "string"
+    },
+    "createdPassword": {
+      "type": "boolean",
+      "default": false
+    },
+    "temp_password": {
+      "type": "string"
     }
   }
 }

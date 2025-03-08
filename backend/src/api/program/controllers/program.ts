@@ -60,8 +60,6 @@ export default factories.createCoreController('api::program.program', ({ strapi 
       }
     }, contentType, { auth: ctx.state.auth });
 
-    console.log(ctx.query)
-
     const program: any = await strapi.documents(contentType.uid).findFirst(sanitizedQueryParams);
 
     const prices = await stripe.prices.list({ product: program.product_id, });
@@ -69,7 +67,7 @@ export default factories.createCoreController('api::program.program', ({ strapi 
 
     const sessionData: any = {
       success_url: `${process.env.FRONTEND_URL}/app/trainings/${ctx.params.id}`,
-      cancel_url: process.env.FRONTEND_URL,
+      cancel_url: `${process.env.FRONTEND_URL}/programs`,
       allow_promotion_codes: true,
       customer: customerId,
       line_items: [

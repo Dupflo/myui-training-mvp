@@ -1,20 +1,33 @@
 'use server'
 
-import { loginSchema, registerSchema, resetPasswordLinkSchema, resetPasswordSchema } from "@/lib/validations/auth"
-import { cookies } from "next/headers"
+import { loginSchema, registerSchema, resetPasswordLinkSchema, resetPasswordSchema } from "@/lib/validations/auth";
+import { cookies } from "next/headers";
 
 const STRAPI_URL = process.env.API_URL || "http://localhost:1337"
+
+function generateRandomPassword(length: number): string {
+  const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let password = "";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    password += charset[randomIndex];
+  }
+  return password;
+}
 
 export async function register(prevState: unknown, formData: FormData) {
   const cookiesList = await cookies()
 
-  const validatedFields = registerSchema.safeParse({
-    firstname: formData.get("firstname"),
-    lastname: formData.get("lastname"),
+  const tempPassword = generateRandomPassword(7)
+
+  const rawFormData = {
     email: formData.get("email"),
     username: formData.get("email"),
-    password: formData.get("password"),
-  })
+    password: tempPassword,
+    temp_password: tempPassword
+  }
+
+  const validatedFields = registerSchema.safeParse(rawFormData)
 
   if (!validatedFields.success) {
     return {
@@ -26,7 +39,7 @@ export async function register(prevState: unknown, formData: FormData) {
     const response = await fetch(`${STRAPI_URL}/auth/local/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(validatedFields.data),
+      body: JSON.stringify(rawFormData),
     })
 
     if (response.ok) {
@@ -78,6 +91,7 @@ export async function login(prevState: unknown, formData: FormData) {
 
     if (response.ok) {
       const data = await response.json()
+      console.log(data)
       const { jwt } = data
 
       // Stocker le JWT dans un cookie HttpOnly
@@ -124,12 +138,75 @@ export async function getCurrentUser() {
   }
 }
 
+export async function changeUserPassword(user, formData) {
+  const cookiesList = await cookies()
+  const token = cookiesList.get("token")?.value
+
+  if (!token) {
+    return null
+  }
+
+  try {
+    const response = await fetch(`${STRAPI_URL}/auth/change-password`, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        "currentPassword": user.temp_password,
+        "password": formData.get("password"),
+        "passwordConfirmation": formData.get("password"),
+      })
+    })
+
+    const changePass = await response.json()
+
+    console.log(changePass)
+
+    if (!response.ok) {
+      return null
+    }
+
+    const res = await fetch(`${STRAPI_URL}/users/${user.id}`, {
+      method: 'PUT',
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        "tempPassword": '',
+        "createdPassword": true,
+      })
+    })
+
+    const updatedUser = await res.json()
+    return updatedUser
+  } catch (error) {
+    console.error("Error fetching user:", error)
+    return null
+  }
+}
+
 export async function signOut() {
   const cookiesList = await cookies()
 
   cookiesList.delete("token")
 
   return { success: true }
+}
+
+export async function checkIfUserExist(formData: FormData) {
+  const email = formData.get("email")
+  try {
+    const response = await fetch(`${STRAPI_URL}/users?email=${email}`, {
+      headers: { "Content-Type": "application/json" }
+    })
+    const data = await response.json()
+    return { email: data.email }
+  } catch (error) {
+    return error
+  }
 }
 
 

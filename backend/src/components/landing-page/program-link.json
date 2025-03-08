@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_landing_page_program_links",
+  "info": {
+    "displayName": "Program Link",
+    "icon": "calendar",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "program": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::program.program"
+    }
+  }
+}

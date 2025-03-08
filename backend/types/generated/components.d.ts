@@ -1,5 +1,18 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface LandingPageProgramLink extends Struct.ComponentSchema {
+  collectionName: 'components_landing_page_program_links';
+  info: {
+    description: '';
+    displayName: 'Program Link';
+    icon: 'calendar';
+  };
+  attributes: {
+    program: Schema.Attribute.Relation<'oneToOne', 'api::program.program'>;
+    title: Schema.Attribute.String;
+  };
+}
+
 export interface ProgramBlocksModule extends Struct.ComponentSchema {
   collectionName: 'components_program_blocks_modules';
   info: {
@@ -104,6 +117,7 @@ export interface StripeConnectedAccount extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'landing-page.program-link': LandingPageProgramLink;
       'program-blocks.module': ProgramBlocksModule;
       'program-elements.ressource': ProgramElementsRessource;
       'program-elements.video': ProgramElementsVideo;

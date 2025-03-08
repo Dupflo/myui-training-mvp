@@ -4,7 +4,8 @@
   "info": {
     "singularName": "landing-page",
     "pluralName": "landing-pages",
-    "displayName": "Landing Page"
+    "displayName": "Landing Page",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -19,6 +20,11 @@
     "slug": {
       "type": "uid",
       "targetField": "title"
+    },
+    "program_direct_link": {
+      "type": "component",
+      "repeatable": false,
+      "component": "landing-page.program-link"
     }
   }
 }

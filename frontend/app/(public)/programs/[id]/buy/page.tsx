@@ -9,10 +9,10 @@ export default async function BuyProgramPage({
 }) {
   const user = await getCurrentUser()
   const { id } = await params
-  if (!user) redirect(`/register?redirectTo=/programs/${id}/buy`)
+  if (!user) redirect(`/checkout/${id}`)
 
   const program = await fetchCMS({
-    path: `programs/${id}/checkout`,
+    path: `checkout/${id}`,
     method: "POST",
     body: { customerId: user.customer_id },
   })

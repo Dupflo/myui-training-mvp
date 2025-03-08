@@ -341,7 +341,7 @@ export async function resetPasswordAndSignIn(_: unknown, formData: FormData) {
 
 export async function generateCheckoutPage({ programId, email, customerId }: { programId: string, email?: string, customerId?: string }) {
   try {
-    console.log(programId)
+
     const checkoutPage = await fetchCMS({
       path: `programs/${programId}/checkout`,
       method: "POST",
@@ -349,6 +349,7 @@ export async function generateCheckoutPage({ programId, email, customerId }: { p
     })
     return checkoutPage
   } catch (error) {
+    console.log(error)
     return error
   }
 }

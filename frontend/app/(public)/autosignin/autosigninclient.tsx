@@ -4,7 +4,11 @@ import { loggedUserFromEmail } from "@/app/(auth)/actions/auth"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 
-export default function AutosigninClient(emailParams: string) {
+export default function AutosigninClient({
+  emailParams,
+}: {
+  emailParams: string
+}) {
   const router = useRouter()
 
   useEffect(() => {

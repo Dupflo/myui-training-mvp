@@ -35,7 +35,7 @@ export default function SetPasswordPageClient({ user }) {
         <FadeIn>
           <form className="space-y-5 text-center" action={formAction}>
             <h1 className="text-lg md:text-4xl font-semibold mb-5">
-              🚀 Encore une petite étape
+              🚀 Paiement validé ! Encore une petite étape
             </h1>
             <h2 className="text-lg md:text-2xl font-semibold">
               Nous avons besoin que tu créer un mot de passe 🔐

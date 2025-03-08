@@ -68,8 +68,7 @@ export function NavUser({
                     user.email
                   ) : (
                     <>
-                      {user.firstname}
-                      {user.lastname}
+                      {user.firstname} {user.lastname}
                     </>
                   )}
                 </span>
@@ -105,8 +104,7 @@ export function NavUser({
                       user.email
                     ) : (
                       <>
-                        {user.firstname}
-                        {user.lastname}
+                        {user.firstname} {user.lastname}
                       </>
                     )}
                   </span>

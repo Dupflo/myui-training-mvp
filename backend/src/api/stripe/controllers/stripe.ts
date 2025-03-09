@@ -57,6 +57,8 @@ export default {
             })
           }
 
+
+
           const programId = expandedSession.line_items.data[0].price.product;
 
           const programContentType = strapi.contentType("api::program.program")
@@ -64,11 +66,13 @@ export default {
           const sanitizedQueryParams = await sanitize.query({
             filters: {
               product_id: programId
-            }
+            },
+            populate: { transactional: true }
           }, programContentType);
 
 
-          const program = await strapi.documents(programContentType.uid).findFirst(sanitizedQueryParams);
+
+          const program: any = await strapi.documents(programContentType.uid).findFirst(sanitizedQueryParams);
 
           await strapi.documents("plugin::users-permissions.user").update({
             documentId: user.documentId,
@@ -76,6 +80,17 @@ export default {
               programs: [...(user.programs || []), { id: program.id }] // Ajout de l'ID du programme sous forme d'objet
             }
           });
+
+          await strapi
+            .service("api::transactional.transactional")
+            .addEmailToUserList({
+              name: `${user.firstname} ${user.lastname}`,
+              email: user.email,
+              tags: program.transactional.tag,
+              listId: program.transactional.list_id,
+              custom_key: program.transactional.brevo_key
+            })
+
 
           return program;
         }

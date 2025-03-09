@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@_sh/strapi-plugin-ckeditor": "^5.0.1",
+    "@getbrevo/brevo": "^2.2.0",
     "@notionhq/client": "^2.2.16",
     "@sklinet/strapi-plugin-video-field": "^1.1.0",
     "@strapi/plugin-cloud": "5.10.3",

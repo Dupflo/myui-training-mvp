@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_transactional_brevos",
+  "info": {
+    "displayName": "Brevo",
+    "icon": "envelop",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "tag": {
+      "type": "string"
+    },
+    "list_id": {
+      "type": "integer"
+    },
+    "brevo_key": {
+      "type": "string"
+    }
+  }
+}

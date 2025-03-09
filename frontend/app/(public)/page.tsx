@@ -41,17 +41,19 @@ export default async function Home() {
                 size="lg"
                 className="bg-amber-500 hover:bg-amber-700 text-white px-8 py-6 text-lg rounded-xl"
               >
-                Rejoindre la liste d'attente
+                Rejoindre la liste d&apos;attente
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
-            <Button
-              size="lg"
-              variant="outline"
-              className="px-8 py-6 text-lg rounded-xl"
-            >
-              En savoir plus
-            </Button>
+            <Link href="#features">
+              <Button
+                size="lg"
+                variant="outline"
+                className="px-8 py-6 text-lg rounded-xl"
+              >
+                En savoir plus
+              </Button>
+            </Link>
           </div>
           <div className="mt-8 text-muted-foreground flex items-center justify-center gap-2">
             <CheckCircle className="h-5 w-5 text-green-500" />
@@ -76,7 +78,7 @@ export default async function Home() {
           <FeatureCard
             icon={<Laptop className="h-10 w-10 text-amber-500" />}
             title="Création intuitive"
-            description="Concevez vos programmes de formation avec une interface intuitive optimisée pour ordinateur et mobile."
+            description="Concevez vos programmes de formation et doter vos adhérents d'une interface intuitive optimisée pour ordinateur et mobile."
           />
           <FeatureCard
             icon={<ShoppingCart className="h-10 w-10 text-amber-500" />}
@@ -127,7 +129,7 @@ export default async function Home() {
       </section>
 
       {/* Integrations Section */}
-      <section id="#integrations" className="bg-muted py-16 md:py-24">
+      <section id="integrations" className="bg-muted py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
@@ -160,7 +162,7 @@ export default async function Home() {
           <div className="md:flex">
             <div className="md:w-1/2 bg-slate-800 text-white p-8 md:p-12">
               <h2 className="text-3xl font-bold mb-4">
-                Rejoignez la liste d'attente
+                Rejoignez la liste d&apos;attente
               </h2>
               <p className="text-amber-100 mb-6">
                 MYUI Training est actuellement en phase bêta. Inscrivez-vous dès

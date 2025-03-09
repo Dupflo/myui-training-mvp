@@ -444,6 +444,7 @@ export interface ApiProgramProgram extends Struct.CollectionTypeSchema {
       >;
     publishedAt: Schema.Attribute.DateTime;
     title: Schema.Attribute.String & Schema.Attribute.Required;
+    transactional: Schema.Attribute.Component<'transactional.brevo', false>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

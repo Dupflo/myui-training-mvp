@@ -114,6 +114,20 @@ export interface StripeConnectedAccount extends Struct.ComponentSchema {
   };
 }
 
+export interface TransactionalBrevo extends Struct.ComponentSchema {
+  collectionName: 'components_transactional_brevos';
+  info: {
+    description: '';
+    displayName: 'Brevo';
+    icon: 'envelop';
+  };
+  attributes: {
+    brevo_key: Schema.Attribute.String;
+    list_id: Schema.Attribute.Integer;
+    tag: Schema.Attribute.String;
+  };
+}
+
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
@@ -124,6 +138,7 @@ declare module '@strapi/strapi' {
       'program-models.modules': ProgramModelsModules;
       'program-models.ressources': ProgramModelsRessources;
       'stripe.connected-account': StripeConnectedAccount;
+      'transactional.brevo': TransactionalBrevo;
     }
   }
 }

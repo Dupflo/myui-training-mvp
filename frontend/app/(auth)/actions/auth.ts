@@ -352,3 +352,20 @@ export async function generateCheckoutPage({ programId, email, customerId }: { p
     return error
   }
 }
+
+export async function addUserToWaitList(formData: FormData) {
+  try {
+    const rawFormData = { name: formData.get('name'), email: formData.get('email'), organization: formData.get('organization') }
+
+    const response = await fetchCMS({
+      path: `transactional/waitlist`,
+      method: "POST",
+      body: rawFormData,
+    })
+    return response
+  } catch (error) {
+    console.log(error)
+    return error
+  }
+}
+

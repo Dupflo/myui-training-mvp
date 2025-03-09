@@ -26,7 +26,7 @@ export default factories.createCoreController('api::program.program', ({ strapi 
 
     // sanitizeQuery to remove any query params that are invalid or the user does not have access to
     // It is strongly recommended to use sanitizeQuery even if validateQuery is used
-    const sanitizedQueryParams = await sanitize.query({ populate: { image: true, program_model } }, contentType, { auth: ctx.state.auth });
+    const sanitizedQueryParams = await sanitize.query({ populate: { image: true, program_model, transactional: true } }, contentType, { auth: ctx.state.auth });
 
     const documents = await strapi.documents(contentType.uid).findMany(sanitizedQueryParams);
 
@@ -39,7 +39,7 @@ export default factories.createCoreController('api::program.program', ({ strapi 
     // sanitizeQuery to remove any query params that are invalid or the user does not have access to
     // It is strongly recommended to use sanitizeQuery even if validateQuery is used
     const sanitizedQueryParams = await sanitize.query({
-      populate: { image: true, program_model },
+      populate: { image: true, program_model, transactional: true },
       filters: {
         documentId: ctx.params.id
       }

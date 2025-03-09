@@ -1,4 +1,7 @@
-import { resetPasswordAndSignIn } from "@/app/(auth)/actions/auth"
+import {
+  getCurrentUser,
+  resetPasswordAndSignIn,
+} from "@/app/(auth)/actions/auth"
 import { AuthForm } from "@/components/login-form"
 import { SearchParams } from "next/dist/server/request/search-params"
 import { redirect } from "next/navigation"
@@ -8,6 +11,12 @@ export default async function ResetPasswordPage({
 }: {
   searchParams: Promise<SearchParams>
 }) {
+  const user = await getCurrentUser()
+
+  if (user) {
+    redirect("/login")
+  }
+
   const { code } = await searchParams
 
   if (!code) redirect("/forgot-password")

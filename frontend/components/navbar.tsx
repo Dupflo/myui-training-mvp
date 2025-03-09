@@ -54,7 +54,12 @@ export default function Navbar() {
             >
               Intégrations
             </Link>
-
+            <Link
+              href="#waitlist"
+              className="text-foreground/80 hover:text-amber-500 transition-colors"
+            >
+              Liste d&lsquo;attente
+            </Link>
             <Link href="/login">
               <Button className="bg-amber-500 hover:bg-amber-700 text-white">
                 Espace membre

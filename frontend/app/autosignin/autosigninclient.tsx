@@ -4,22 +4,18 @@ import { loggedUserFromEmail } from "@/app/(auth)/actions/auth"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 
-export default function AutosigninClient({
-  emailParams,
-}: {
-  emailParams: string
-}) {
+export default function AutosigninClient({ email }: { email: string }) {
   const router = useRouter()
 
   useEffect(() => {
     const fetchUser = async () => {
-      if (emailParams) {
-        await loggedUserFromEmail(emailParams as string)
-        router.push("/")
+      if (email) {
+        await loggedUserFromEmail(email as string)
+        router.push("/login")
       }
     }
     fetchUser()
-  }, [emailParams])
+  }, [email])
 
   return (
     <div className="flex items-center justify-center gap-2 h-screen">

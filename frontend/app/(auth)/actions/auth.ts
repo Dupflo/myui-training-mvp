@@ -106,6 +106,8 @@ export async function login(prevState: unknown, formData: FormData) {
 
       return { success: true }
     } else {
+      const error = await response.json()
+      console.error(error)
       return { error: "Identifiants invalides" }
     }
   } catch (error) {
@@ -247,6 +249,7 @@ export async function loggedUserFromEmail(email: string) {
     const loginResponse = await login(null, formData);
     return loginResponse;
   } catch (error) {
+
     return error
   }
 }

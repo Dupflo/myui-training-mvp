@@ -7,5 +7,5 @@ export default async function AutosigninPage({
   searchParams: Promise<SearchParams>
 }) {
   const { email } = await searchParams
-  return <AutosigninClient emailParams={email} />
+  return <AutosigninClient email={(email as string).toLowerCase()} />
 }

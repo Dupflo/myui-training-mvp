@@ -58,8 +58,6 @@ export default {
             })
           }
 
-
-
           const programId = expandedSession.line_items.data[0].price.product;
 
           const programContentType = strapi.contentType("api::program.program")
@@ -70,8 +68,6 @@ export default {
             },
             populate: { transactional: true }
           }, programContentType);
-
-
 
           const program: any = await strapi.documents(programContentType.uid).findFirst(sanitizedQueryParams);
 
@@ -102,40 +98,141 @@ export default {
   },
   syncStripeCustomers: async (ctx) => {
     try {
-      // Récupérer tous les clients Stripe
-      const customers = await stripe.customers.list({ limit: 5 });
+      let hasMore = true;
+      let lastPaymentId = null;
+      const customerIds = new Set();
+      const guestEmails = new Set();
 
-      for (const customer of customers.data) {
-        const tempPassword = generatePassword()
-        const splittedName = customer.name ? customer.name.split(' ') : ['Utilisateur', 'Anonyme'];
-        const email = customer.email;
+      // Retrieve all payments by paginating
+      while (hasMore) {
+        const paymentParams: any = { limit: 100, expand: ['data.customer'] };
+        if (lastPaymentId) paymentParams.starting_after = lastPaymentId;
 
-        if (!email) continue;
+        const payments: any = await stripe.paymentIntents.list(paymentParams);
+        for (const payment of payments.data) {
+          if (payment.customer) {
+            customerIds.add(payment.customer.id);
+          } else {
+            const charges = await stripe.charges.list({ payment_intent: payment.id });
+            charges.data.forEach((charge) => {
+              if (charge.billing_details.email) {
+                guestEmails.add(charge.billing_details.email.toLowerCase());
+              }
+            });
+          }
+        }
+        hasMore = payments.has_more;
+        if (hasMore) lastPaymentId = payments.data[payments.data.length - 1].id;
+      }
 
-        // Vérifier si l'utilisateur existe déjà
-        const existingUser = await strapi.query('plugin::users-permissions.user').findOne({ where: { email } });
-        if (existingUser) continue;
+      // Process Stripe customers
+      for (const customerId of customerIds) {
+        await createOrUpdateUserFromStripe(customerId);
+      }
 
-        // Créer un nouvel utilisateur
-        await strapi.query('plugin::users-permissions.user').create({
-          data: {
-            username: email,
-            firstname: splittedName[0] || 'Utilisateur',
-            lastname: splittedName[1] || 'Anonyme',
-            email,
-            customer_id: customer.id,
-            password: tempPassword,
-            temp_password: tempPassword,
-            confirmed: true,
-            provider: 'local',
-          },
-        });
+      // Process guest emails
+      for (const email of guestEmails) {
+        await createOrUpdateUserFromEmail(email);
       }
 
       ctx.send({ message: 'Synchronisation des clients Stripe terminée avec succès' });
     } catch (error) {
-      console.log(error)
+      console.log(error);
       ctx.throw(500, 'Erreur lors de la synchronisation des clients Stripe', { error });
     }
   },
+}
+
+
+async function createOrUpdateUserFromStripe(customerId) {
+  const customer: any = await stripe.customers.retrieve(customerId);
+  const email = customer.email?.toLowerCase();
+  if (!email) return;
+
+  const existingUser = await strapi.query('plugin::users-permissions.user').findOne({ where: { email } });
+  if (existingUser) return;
+
+  const programs = await getUserPrograms(customer.id);
+  if (programs.length === 0) return;
+
+  const tempPassword = generatePassword();
+
+  await strapi.documents('plugin::users-permissions.user').create({
+    data: {
+      username: email,
+      firstname: customer.name?.split(' ')[0] || 'Utilisateur',
+      lastname: customer.name?.split(' ')[1] || 'Anonyme',
+      email,
+      customer_id: customer.id,
+      password: tempPassword,
+      temp_password: tempPassword,
+      confirmed: true,
+      provider: 'local',
+      programs
+    },
+  });
+}
+
+async function createOrUpdateUserFromEmail(email) {
+  const existingUser = await strapi.query('plugin::users-permissions.user').findOne({ where: { email } });
+  const program = await getProgramById("yec6f7nxucoqpx63yopl5ezf");
+
+  if (existingUser) {
+    await strapi.documents("plugin::users-permissions.user").update({
+      documentId: existingUser.documentId,
+      data: {
+        programs: [...(existingUser.programs || []), { id: program.id }] // Ajout de l'ID du programme sous forme d'objet
+      }
+    });
+    return
+  }
+
+  const tempPassword = generatePassword();
+
+  await strapi.documents('plugin::users-permissions.user').create({
+    data: {
+      username: email,
+      email,
+      password: tempPassword,
+      temp_password: tempPassword,
+      confirmed: true,
+      provider: 'local',
+      programs: [program]
+    },
+  });
+}
+
+async function getUserPrograms(customerId) {
+  let hasMorePayments = true;
+  let lastPaymentId = null;
+  let programs = [];
+
+  while (hasMorePayments) {
+    const paymentParams: any = { customer: customerId, limit: 100 };
+    if (lastPaymentId) paymentParams.starting_after = lastPaymentId;
+    const payments = await stripe.paymentIntents.list(paymentParams);
+
+    for (const payment of payments.data) {
+      const programId = payment.amount_received / 100 < 50
+        ? 'yec6f7nxucoqpx63yopl5ezf'
+        : 'r440p52r8660d5wdc544rov9';
+      const program = await getProgramById(programId);
+      if (program) programs.push({ id: program.id });
+    }
+
+    hasMorePayments = payments.has_more;
+    if (hasMorePayments) lastPaymentId = payments.data[payments.data.length - 1].id;
+  }
+  return programs;
+}
+
+async function getProgramById(programId) {
+  const programContentType = strapi.contentType('api::program.program');
+  const { sanitize } = strapi.contentAPI;
+  const sanitizedQueryParams = await sanitize.query({
+    filters: { documentId: programId },
+    populate: { transactional: true }
+  }, programContentType);
+
+  return await strapi.documents(programContentType.uid).findFirst(sanitizedQueryParams);
 }

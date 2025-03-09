@@ -114,7 +114,7 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <Link href="/programs">
+              <Link href="/#programs">
                 <DropdownMenuItem>
                   <Sparkles />
                   Découvrir d&apos;autres programmes

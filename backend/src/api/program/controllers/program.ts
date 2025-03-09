@@ -68,7 +68,7 @@ export default factories.createCoreController('api::program.program', ({ strapi 
 
     const sessionData: any = {
       success_url: `${process.env.FRONTEND_URL}/checkout/${ctx.params.id}?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.FRONTEND_URL}/programs`,
+      cancel_url: `${process.env.FRONTEND_URL}/#programs`,
       allow_promotion_codes: true,
       customer_email: email,
       line_items: [

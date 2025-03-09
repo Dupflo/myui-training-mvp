@@ -19,7 +19,7 @@ export default async function LoginPage({
     }
     if (user.programs.length > 0) {
       redirect(`/app/trainings/${user.programs[0].documentId}`)
-    } else redirect("/programs")
+    } else redirect("/#programs")
   }
 
   return (

@@ -107,7 +107,7 @@ export default function Navbar() {
                 Liste d&lsquo;attente
               </Link>
               <Link href="/login">
-                <Button className="bg-amber-500 hover:bg-amber-700 text-white">
+                <Button className="bg-amber-500 hover:bg-amber-700 text-white w-full">
                   Espace membre
                 </Button>
               </Link>

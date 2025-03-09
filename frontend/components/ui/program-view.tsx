@@ -19,7 +19,7 @@ export default function ProgramView() {
             </h1>
             {selectedVideo.media && <VideoPlayer video={selectedVideo} />}
             {selectedModule.description && (
-              <div className="text-center w-full max-w-full prose bg-sidebar p-5 rounded-md">
+              <div className="w-full max-w-full prose bg-sidebar p-5 rounded-md">
                 <Markdown
                   rehypePlugins={[rehypeRaw]}
                   remarkPlugins={[remarkGfm]}

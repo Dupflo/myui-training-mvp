@@ -25,7 +25,7 @@ export default function Card({ data }: { data: CardProps }) {
       <div className="mt-4 sm:flex sm:items-center sm:justify-center sm:gap-4">
         <strong className="font-medium">{data.title}</strong>
 
-        <span className="hidden sm:block sm:h-px sm:w-8 sm:bg-yellow-500"></span>
+        <span className="hidden sm:block sm:h-px sm:w-8 sm:bg-amber-500"></span>
 
         <p className="mt-0.5 opacity-50 sm:mt-0">
           {new Intl.NumberFormat("fr-FR", {

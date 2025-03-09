@@ -78,6 +78,12 @@
   * {
     @apply border-border;
   }
+  [id] {
+    @apply scroll-mt-10;
+  }
+  html {
+    @apply scroll-smooth;
+  }
   body {
     @apply bg-background text-foreground;
   }

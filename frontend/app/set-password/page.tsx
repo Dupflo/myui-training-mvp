@@ -9,7 +9,7 @@ export default async function SetPasswordPage({
   searchParams: SearchParams
 }) {
   const user = await getCurrentUser()
-  if (!user) redirect("/")
+  if (!user) redirect("/login")
   else if (user.createdPassword) {
     const search = await searchParams
     const redirectTo = search.redirectTo as string

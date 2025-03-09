@@ -5,18 +5,15 @@ meta {
 }
 
 get {
-  url: http://localhost:1337/api/users/me
+  url: http://localhost:1337/api/users?email=floriandupuis1996@gmail.com
   body: json
   auth: bearer
 }
 
-auth:bearer {
-  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzM5MzcyMzUzLCJleHAiOjE3NDE5NjQzNTN9._2l9M15ELntEBBlRUtAJcz1MEzqmZ4laMvMZY1DjRbo
+params:query {
+  email: floriandupuis1996@gmail.com
 }
 
-body:json {
-  {
-    "identifier": "florian@anywwwhere.com",
-    "password": "123456!"
-  }
+auth:bearer {
+  token: 
 }

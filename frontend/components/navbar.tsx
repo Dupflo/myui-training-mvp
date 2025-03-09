@@ -100,9 +100,15 @@ export default function Navbar() {
               >
                 Intégrations
               </Link>
-              <Link href="#waitlist">
-                <Button className="bg-amber-500 hover:bg-amber-700 text-white w-full">
-                  Rejoindre la liste d'attente
+              <Link
+                href="#waitlist"
+                className="text-foreground/80 hover:text-amber-500 transition-colors px-3 py-2"
+              >
+                Liste d&lsquo;attente
+              </Link>
+              <Link href="/login">
+                <Button className="bg-amber-500 hover:bg-amber-700 text-white">
+                  Espace membre
                 </Button>
               </Link>
             </div>

@@ -41,15 +41,17 @@ export default async function NotionPage({
         )}
 
         <RenderBlocks blocks={page.content.content} />
-        <div className="bg-slate-900 fixed w-full flex items-center justify-center bottom-0 left-0 text-white  p-5">
-          <Link
-            href={`/checkout/${page.program_direct_link.program.documentId}`}
-          >
-            <Button variant="destructive" size="lg">
-              {page.program_direct_link.title}
-            </Button>
-          </Link>
-        </div>
+        {page.program_direct_link && (
+          <div className="bg-slate-900 fixed w-full flex items-center justify-center bottom-0 left-0 text-white  p-5">
+            <Link
+              href={`/checkout/${page.program_direct_link.program.documentId}`}
+            >
+              <Button variant="destructive" size="lg">
+                {page.program_direct_link.title}
+              </Button>
+            </Link>
+          </div>
+        )}
       </article>{" "}
     </section>
   )

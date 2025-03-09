@@ -11,13 +11,25 @@ const notion = new Client({
 })
 
 // Recursive function to get blocks with their children
-const getBlocksWithChildren = async (blockId) => {
-  const blocks = await notion.blocks.children.list({ block_id: blockId });
+const getBlocksWithChildren = async (blockId, startCursor = undefined) => {
+  let blocks = [];
+  let hasMore = true;
+  let cursor = startCursor;
 
-  // Process blocks to fetch children for those that can have them
+  while (hasMore) {
+    const response = await notion.blocks.children.list({
+      block_id: blockId,
+      ...(cursor && { start_cursor: cursor }),  // Inclure start_cursor seulement s'il est défini
+    });
+
+    blocks = [...blocks, ...response.results];
+    hasMore = response.has_more;
+    cursor = response.next_cursor || undefined;  // Éviter "null"
+  }
+
+  // Récupère récursivement les enfants pour les blocs qui en ont
   const blocksWithChildren = await Promise.all(
-    blocks.results.map(async (block) => {
-      // These block types can have children
+    blocks.map(async (block) => {
       if (block.has_children) {
         const children = await getBlocksWithChildren(block.id);
         return { ...block, children };
@@ -28,6 +40,7 @@ const getBlocksWithChildren = async (blockId) => {
 
   return blocksWithChildren;
 };
+
 
 const getPage = async (pageId) => {
   const info = await notion.pages.retrieve({ page_id: pageId });

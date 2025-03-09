@@ -401,7 +401,7 @@ const ToDo: React.FC<{ id: string; value: any }> = ({ id, value }) => (
 )
 
 const Toggle: React.FC<{ value: any; block: Block }> = ({ value, block }) => (
-  <details>
+  <details className="my-1">
     <summary className="cursor-pointer">
       <SpanText text={value.rich_text} />
     </summary>

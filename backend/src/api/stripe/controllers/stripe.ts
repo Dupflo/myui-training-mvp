@@ -1,3 +1,4 @@
+import console from "console";
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, null)
@@ -98,5 +99,43 @@ export default {
     } catch (err) {
       console.error(err)
     }
-  }
+  },
+  syncStripeCustomers: async (ctx) => {
+    try {
+      // Récupérer tous les clients Stripe
+      const customers = await stripe.customers.list({ limit: 5 });
+
+      for (const customer of customers.data) {
+        const tempPassword = generatePassword()
+        const splittedName = customer.name ? customer.name.split(' ') : ['Utilisateur', 'Anonyme'];
+        const email = customer.email;
+
+        if (!email) continue;
+
+        // Vérifier si l'utilisateur existe déjà
+        const existingUser = await strapi.query('plugin::users-permissions.user').findOne({ where: { email } });
+        if (existingUser) continue;
+
+        // Créer un nouvel utilisateur
+        await strapi.query('plugin::users-permissions.user').create({
+          data: {
+            username: email,
+            firstname: splittedName[0] || 'Utilisateur',
+            lastname: splittedName[1] || 'Anonyme',
+            email,
+            customer_id: customer.id,
+            password: tempPassword,
+            temp_password: tempPassword,
+            confirmed: true,
+            provider: 'local',
+          },
+        });
+      }
+
+      ctx.send({ message: 'Synchronisation des clients Stripe terminée avec succès' });
+    } catch (error) {
+      console.log(error)
+      ctx.throw(500, 'Erreur lors de la synchronisation des clients Stripe', { error });
+    }
+  },
 }

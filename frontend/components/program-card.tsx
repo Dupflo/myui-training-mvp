@@ -1,10 +1,8 @@
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 
 import { User } from "lucide-react"
 import Image from "next/image"
-import Link from "next/link"
 
 interface ProgramCardProps {
   title: string
@@ -55,7 +53,7 @@ export default function ProgramCard({
           <span>{author}</span>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between items-center border-t pt-4">
+      {/* <CardFooter className="flex justify-between items-center border-t pt-4">
         <span className="font-bold text-amber-500">
           {new Intl.NumberFormat("fr-FR", {
             style: "currency",
@@ -67,7 +65,7 @@ export default function ProgramCard({
             En savoir plus
           </Button>
         </Link>
-      </CardFooter>
+      </CardFooter> */}
     </Card>
   )
 }

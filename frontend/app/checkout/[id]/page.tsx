@@ -1,5 +1,6 @@
 import { generateCheckoutPage, getCurrentUser } from "@/app/(auth)/actions/auth"
 import { Program } from "@/contexts/program-context"
+import { fetchCMS } from "@/utils/fetchers"
 import { SearchParams } from "next/dist/server/request/search-params"
 import { notFound, redirect } from "next/navigation"
 import CheckoutPageClient from "./checkout-client"
@@ -16,10 +17,8 @@ export default async function CheckoutPage({
 
   const { id } = await params
 
-  const data = await fetch(`${process.env.API_URL}/programs/${id}`)
-  if (!data.ok) notFound()
-
-  const program = await data.json()
+  const program = await fetchCMS({ path: `programs/${id}`, tags: [id] })
+  if (!program) notFound()
 
   if (user) {
     const hasProgram = user.programs.find(

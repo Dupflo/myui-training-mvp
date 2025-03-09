@@ -11,7 +11,7 @@ export async function POST(req: Request) {
       break
     case 'program':
       revalidateTag(entry.documentId)
-      revalidateTag(`program`)
+      revalidateTag(`programs`)
       console.info(`program ${entry.title} revalidée`)
       break
     default:

@@ -1,4 +1,5 @@
 import { Metadata } from "next"
+import { unstable_cache } from "next/cache"
 import { SearchParams } from "next/dist/server/request/search-params"
 import { notFound } from "next/navigation"
 
@@ -52,18 +53,18 @@ export async function fetchCMS({
     body: body ? JSON.stringify(body) : undefined
   }
 
-  // if (process.env.NODE_ENV !== 'production') {
-  const { data } = await fetchApi(requestUrl, options)
-  return Array.isArray(data.data) ? data.data : data.data?.attributes || data
-  // }
+  if (process.env.NODE_ENV !== 'production') {
+    const { data } = await fetchApi(requestUrl, options)
+    return Array.isArray(data.data) ? data.data : data.data?.attributes || data
+  }
 
-  // return unstable_cache(async (initOptions) => {
-  //   const { data } = await fetchApi(requestUrl, initOptions)
-  //   return Array.isArray(data.data) ? data.data : data.data?.attributes || data
-  // },
-  //   tags,
-  //   { tags }
-  // )(options)
+  return unstable_cache(async (initOptions) => {
+    const { data } = await fetchApi(requestUrl, initOptions)
+    return Array.isArray(data.data) ? data.data : data.data?.attributes || data
+  },
+    tags,
+    { tags }
+  )(options)
 }
 
 export async function getPageData(params: Promise<{ slug: string[] }> | string, searchParams: SearchParams, draft: boolean) {

@@ -340,12 +340,12 @@ export async function resetPasswordAndSignIn(_: unknown, formData: FormData) {
 }
 
 
-export async function generateCheckoutPage({ programId, email, customerId }: { programId: string, email?: string, customerId?: string }) {
+export async function generateCheckoutPage({ programId, email, customerId, coupon, promotion_code, }: { programId: string, email?: string, customerId?: string, coupon?: string, promotion_code?: string }) {
   try {
     const checkoutPage = await fetchCMS({
       path: `programs/${programId}/checkout`,
       method: "POST",
-      body: { customerId, email },
+      body: { customerId, email, coupon, promotion_code },
       cache: 'no-cache'
     })
     return checkoutPage

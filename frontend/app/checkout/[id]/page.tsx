@@ -14,18 +14,10 @@ export default async function CheckoutPage({
 }) {
   const user = await getCurrentUser()
   const { coupon, promotion_code, session_id } = await searchParams
+
   const { id } = await params
 
-  const queryParams = new URLSearchParams()
-
-  if (coupon) queryParams.append("coupon", coupon as string)
-  if (promotion_code)
-    queryParams.append("promotion_code", promotion_code as string)
-
-  const queryString = queryParams.toString()
-  const path = `programs/${id}${queryString ? `?${queryString}` : ""}`
-
-  const program = await fetchCMS({ path, tags: [id] })
+  const program = await fetchCMS({ path: `programs/${id}`, tags: [id] })
   if (!program) notFound()
 
   if (user) {
@@ -40,6 +32,8 @@ export default async function CheckoutPage({
     const checkoutPage = await generateCheckoutPage({
       programId: id,
       customerId: user.customer_id,
+      coupon,
+      promotion_code,
     })
 
     if (checkoutPage.url) {

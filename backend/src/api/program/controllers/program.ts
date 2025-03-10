@@ -51,7 +51,7 @@ export default factories.createCoreController('api::program.program', ({ strapi 
   },
   async checkout(ctx) {
     const { sanitize } = strapi.contentAPI;
-    const { customerId, email } = ctx.request.body
+    const { customerId, email, coupon, promotion_code } = ctx.request.body
     const contentType = strapi.contentType("api::program.program")
     const sanitizedQueryParams = await sanitize.query({
       populate: { program_model, connected_accounts: { populate: { account: true } } },
@@ -88,15 +88,15 @@ export default factories.createCoreController('api::program.program', ({ strapi 
       sessionData.customer_creation = "always"
     }
 
-    if (ctx.query.coupon) {
+    if (coupon) {
       sessionData.allow_promotion_codes = undefined
       sessionData.discounts = []
-      sessionData.discounts.push({ coupon: ctx.query.coupon })
+      sessionData.discounts.push({ coupon })
     }
-    if (ctx.query.promotion_code) {
+    if (promotion_code) {
       sessionData.allow_promotion_codes = undefined
       sessionData.discounts = []
-      sessionData.discouns.push({ promotion_code: ctx.query.promotion_code })
+      sessionData.discouns.push({ promotion_code })
     }
     // Ajouter payment_intent_data uniquement si program.connected_accounts > 0
     if (program.connected_accounts.length > 0) {

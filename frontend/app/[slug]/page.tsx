@@ -2,8 +2,6 @@ import { RenderBlocks } from "@/components/notion/content-block"
 import { fetchCMS } from "@/utils/fetchers"
 import { notFound } from "next/navigation"
 
-export const revalidate = 60
-
 export default async function NotionPage({
   params,
 }: {

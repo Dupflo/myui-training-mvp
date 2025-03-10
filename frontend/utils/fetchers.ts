@@ -25,6 +25,7 @@ export async function fetchCMS({
   method = 'GET',
   tags,
   cache,
+  revalidate
 }: {
   path: string
   body?: any
@@ -32,6 +33,7 @@ export async function fetchCMS({
   method?: string
   tags?: NextFetchRequestConfig['tags']
   cache?: RequestCache
+  revalidate?: number
 }) {
   const url = new URL(getStrapiURL(`/${path}`))
 
@@ -63,7 +65,7 @@ export async function fetchCMS({
     return Array.isArray(data.data) ? data.data : data.data?.attributes || data
   },
     tags,
-    { tags }
+    { tags, revalidate }
   )(options)
 }
 

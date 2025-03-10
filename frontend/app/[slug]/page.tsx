@@ -2,8 +2,6 @@ import { RenderBlocks } from "@/components/notion/content-block"
 import { fetchCMS } from "@/utils/fetchers"
 import { notFound } from "next/navigation"
 
-export const revalidate = 3600
-
 export default async function NotionPage({
   params,
 }: {
@@ -13,6 +11,7 @@ export default async function NotionPage({
   const page = await fetchCMS({
     path: `landing-pages/${slug}`,
     cache: "no-cache",
+    revalidate: 3600,
   })
 
   if (!page.content) notFound()

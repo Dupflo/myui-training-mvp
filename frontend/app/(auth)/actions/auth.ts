@@ -348,6 +348,7 @@ export async function generateCheckoutPage({ programId, email, customerId }: { p
       path: `programs/${programId}/checkout`,
       method: "POST",
       body: { customerId, email },
+      cache: 'no-cache'
     })
     return checkoutPage
   } catch (error) {

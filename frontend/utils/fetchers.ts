@@ -53,7 +53,7 @@ export async function fetchCMS({
     body: body ? JSON.stringify(body) : undefined
   }
 
-  if (process.env.NODE_ENV !== 'production') {
+  if (process.env.NODE_ENV !== 'production' || cache) {
     const { data } = await fetchApi(requestUrl, options)
     return Array.isArray(data.data) ? data.data : data.data?.attributes || data
   }

@@ -26,11 +26,11 @@ export default async function NotionPage({
           </h1>
           <img
             src={
-              page.content.info.cover?.file.url ||
+              page.content.info.cover.file?.url ||
               page.content.info.cover.external?.url
             }
             alt="Cover Image"
-            className="mb-5 w-full absolute object-cover object-bottom top-0 m-auto left-0 bottom-0"
+            className="mb-5 w-full absolute object-cover object-bottom right-0 top-0 m-auto left-0 bottom-0"
           />
         </div>
       )}

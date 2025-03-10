@@ -36,7 +36,7 @@ export default async function LoginPage({
         label: "Pas de compte ?",
         action: {
           name: "Découvrez nos programmes",
-          link: `/programs`,
+          link: `/#programs`,
         },
       }}
     />

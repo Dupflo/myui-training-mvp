@@ -114,7 +114,6 @@ export function AppSidebar(props: AppSidebarProps) {
                             key={video.title}
                             className={videoIndex === 0 ? "mt-1" : ""}
                             onClick={() => {
-                              console.log("hello")
                               setOpenMobile(false)
                             }}
                           >

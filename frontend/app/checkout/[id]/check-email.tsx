@@ -21,7 +21,6 @@ export default function CheckEmail({ programId, setUser }: any) {
           programId,
           email: formData.get("email") as string,
         })
-        console.log(checkoutPage)
         if (checkoutPage) window.location.href = checkoutPage.url
       }
       // const response = await checkIfUserExist()

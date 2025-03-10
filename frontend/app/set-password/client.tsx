@@ -13,7 +13,6 @@ export default function SetPasswordPageClient({ user }) {
   const router = useRouter()
   const [, formAction] = useActionState(
     async (state: void, formData: FormData) => {
-      console.log(user)
       await changeUserPassword(user, formData)
       router.refresh()
     },

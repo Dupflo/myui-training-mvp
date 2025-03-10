@@ -137,7 +137,7 @@ export default {
 
       ctx.send({ message: 'Synchronisation des clients Stripe terminée avec succès' });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       ctx.throw(500, 'Erreur lors de la synchronisation des clients Stripe', { error });
     }
   },

@@ -59,7 +59,7 @@ export async function register(prevState: unknown, formData: FormData) {
       return { success: true }
     } else {
       const error = await response.json()
-      console.log(error)
+      console.error(error)
       return { error: "Un compte existe déjà avec ces identifiants" }
     }
   } catch (error) {
@@ -111,7 +111,7 @@ export async function login(prevState: unknown, formData: FormData) {
       return { error: "Identifiants invalides" }
     }
   } catch (error) {
-    console.log(error)
+    console.error(error)
     return { error: "Une erreur est survenue lors de la connexion" }
   }
 }
@@ -165,9 +165,7 @@ export async function changeUserPassword(user, formData) {
       })
     })
 
-    const changePass = await response.json()
-
-    console.log(changePass)
+    await response.json()
 
     if (!response.ok) {
       return null
@@ -226,9 +224,9 @@ export async function loggedUserFromSession(session_id: string) {
     formData.append("password", user.temp_password);
 
     const loginResponse = await login(null, formData);
-    console.log(loginResponse)
     return loginResponse;
   } catch (error) {
+    console.error(error)
     return error
   }
 }
@@ -352,7 +350,7 @@ export async function generateCheckoutPage({ programId, email, customerId }: { p
     })
     return checkoutPage
   } catch (error) {
-    console.log(error)
+    console.error(error)
     return error
   }
 }
@@ -368,7 +366,7 @@ export async function addUserToWaitList(formData: FormData) {
     })
     return response
   } catch (error) {
-    console.log(error)
+    console.error(error)
     return error
   }
 }

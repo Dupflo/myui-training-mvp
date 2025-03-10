@@ -25,7 +25,6 @@ export default {
     const brevo = require('@getbrevo/brevo');
     let apiInstance = new brevo.ContactsApi();
 
-    console.log(custom_key)
     let apiKey = apiInstance.authentications['apiKey'];
     apiKey.apiKey = custom_key ?? process.env.BREVO_API_KEY;
     try {
@@ -48,7 +47,7 @@ export default {
       // Vérifie si l'erreur est due à un email déjà existant
       if (error.response && error.response.body && error.response.body.code === 'duplicate_parameter') {
         try {
-          console.log(`Email ${email} already exists, updating lists...`);
+          console.info(`Email ${email} already exists, updating lists...`);
 
           // Récupérer l'ID du contact existant
           const existingContact = await apiInstance.getContactInfo(email);
@@ -68,7 +67,7 @@ export default {
                 "TAGS": tags && [...existingContact.body.attributes.TAGS, tags]
               }
             });
-            console.log(`Contact ${email} added to list ${listId}`);
+            console.info(`Contact ${email} added to list ${listId}`);
           }
 
           return { message: `Contact updated and added to list ${listId}` };

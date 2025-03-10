@@ -54,7 +54,7 @@ export default function SetPasswordPageClient({ user }) {
               className="text-center"
               required
               pattern=".{6,}"
-              placeholder=" Entrez votre mot de passe"
+              placeholder="Entrez un mot de passe de 6 caractères minimum"
               size="lg"
             />
             <Button

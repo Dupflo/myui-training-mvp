@@ -54,7 +54,7 @@ export default function SignUser({ user }) {
             className="text-center"
             size="lg"
             required
-            placeholder=" Entrez votre mot de passe"
+            placeholder="Entrez votre mot de passe"
           />
         </div>
         <Button

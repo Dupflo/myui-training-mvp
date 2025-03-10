@@ -64,7 +64,7 @@ export default {
                 "PRENOM": splittedName[0],
                 "NOM": splittedName[1],
                 "ORGANIZATION": organization,
-                "TAGS": tags && [...existingContact.body.attributes.TAGS, tags]
+                "TAGS": tags && [...existingContact.body.attributes?.TAGS, tags]
               }
             });
             console.info(`Contact ${email} added to list ${listId}`);

@@ -50,6 +50,7 @@ export default function SignUser({ user }) {
             id="password"
             name="password"
             type="password"
+            pattern=".{6,}"
             className="text-center"
             size="lg"
             required

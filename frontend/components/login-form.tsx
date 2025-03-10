@@ -117,7 +117,13 @@ export function AuthForm({
                 </Link>
               )}
             </div>
-            <Input id="password" name="password" type="password" required />
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              pattern=".{6,}"
+              required
+            />
           </div>
         )}
         {fields.hidden && (

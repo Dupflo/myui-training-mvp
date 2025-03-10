@@ -53,6 +53,7 @@ export default function SetPasswordPageClient({ user }) {
               type="password"
               className="text-center"
               required
+              pattern=".{6,}"
               placeholder=" Entrez votre mot de passe"
               size="lg"
             />

@@ -10,7 +10,7 @@ export default async function NotionPage({
   const { slug } = await params
   const page = await fetchCMS({
     path: `landing-pages/${slug}`,
-    revalidate: 3600,
+    revalidate: 1800,
   })
 
   if (!page.content) notFound()

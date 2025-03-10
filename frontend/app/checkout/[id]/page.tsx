@@ -42,6 +42,11 @@ export default async function CheckoutPage({
   }
 
   return (
-    <CheckoutPageClient program={program} sessionId={session_id as string} />
+    <CheckoutPageClient
+      program={program}
+      sessionId={session_id as string}
+      coupon={coupon}
+      promotion_code={promotion_code}
+    />
   )
 }

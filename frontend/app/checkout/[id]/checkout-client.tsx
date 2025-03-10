@@ -12,9 +12,13 @@ import SignUser from "./sign-user"
 export default function CheckoutPageClient({
   program,
   sessionId,
+  coupon,
+  promotion_code,
 }: {
   program: Program
   sessionId?: string
+  coupon?: string
+  promotion_code?: string
 }) {
   const [user, setUser] = useState(null)
 
@@ -77,7 +81,12 @@ export default function CheckoutPageClient({
         {user ? (
           <SignUser user={user} />
         ) : (
-          <CheckEmail programId={program.documentId} setUser={setUser} />
+          <CheckEmail
+            programId={program.documentId}
+            setUser={setUser}
+            coupon={coupon}
+            promotion_code={promotion_code}
+          />
         )}
       </div>
       <footer className="mt-auto fixed bottom-0 w-full">

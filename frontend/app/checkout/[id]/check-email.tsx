@@ -9,7 +9,12 @@ import { Label } from "@/components/ui/label"
 import { useRouter } from "next/navigation"
 import { useActionState } from "react"
 
-export default function CheckEmail({ programId, setUser }: any) {
+export default function CheckEmail({
+  programId,
+  setUser,
+  coupon,
+  promotion_code,
+}: any) {
   const router = useRouter()
   const [, formAction] = useActionState(
     async (state: void, formData: FormData) => {
@@ -20,6 +25,8 @@ export default function CheckEmail({ programId, setUser }: any) {
         const checkoutPage = await generateCheckoutPage({
           programId,
           email: formData.get("email") as string,
+          coupon,
+          promotion_code,
         })
         if (checkoutPage) window.location.href = checkoutPage.url
       }

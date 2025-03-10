@@ -31,7 +31,7 @@ export default function ForgotPasswordPage() {
           <p>
             Si vous ne recevez pas cet e-mail dans quelques minutes, Vérifiez
             votre dossier spam. N’hésitez pas à refaire la demande ou à{" "}
-            <Link href="mailto:support@myui-training.com" className="underline">
+            <Link href="mailto:contact@myui-training.com" className="underline">
               contacter notre support
             </Link>
             .

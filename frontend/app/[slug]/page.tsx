@@ -30,7 +30,7 @@ export default async function NotionPage({
               page.content.info.cover.external?.url
             }
             alt="Cover Image"
-            className="mb-5 w-full absolute object-cover object-bottom right-0 top-0 m-auto left-0 bottom-0"
+            className="w-full absolute object-cover object-bottom right-0 top-0 m-auto left-0 bottom-0"
           />
         </div>
       )}

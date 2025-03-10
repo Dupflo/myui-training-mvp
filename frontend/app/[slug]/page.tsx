@@ -10,7 +10,6 @@ export default async function NotionPage({
   const { slug } = await params
   const page = await fetchCMS({
     path: `landing-pages/${slug}`,
-    cache: "no-cache",
     revalidate: 3600,
   })
 

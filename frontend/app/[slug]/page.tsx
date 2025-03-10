@@ -1,7 +1,5 @@
 import { RenderBlocks } from "@/components/notion/content-block"
-import { Button } from "@/components/ui/button"
 import { fetchCMS } from "@/utils/fetchers"
-import Link from "next/link"
 import { notFound } from "next/navigation"
 
 export const revalidate = 60
@@ -27,9 +25,12 @@ export default async function NotionPage({
             {page.content.info.properties.title.title[0].plain_text}
           </h1>
           <img
-            src={page.content.info.cover.external.url}
+            src={
+              page.content.info.cover?.file.url ||
+              page.content.info.cover.external?.url
+            }
             alt="Cover Image"
-            className="mb-5 w-full absolute object-cover top-0 left-0 bottom-0"
+            className="mb-5 w-full absolute object-cover object-bottom top-0 m-auto left-0 bottom-0"
           />
         </div>
       )}
@@ -41,7 +42,7 @@ export default async function NotionPage({
         )}
 
         <RenderBlocks blocks={page.content.content} />
-        {page.program_direct_link && (
+        {/* {page.program_direct_link && (
           <div className="bg-slate-900 fixed w-full flex items-center justify-center bottom-0 left-0 text-white  p-5">
             <Link
               href={`/checkout/${page.program_direct_link.program.documentId}`}
@@ -51,7 +52,7 @@ export default async function NotionPage({
               </Button>
             </Link>
           </div>
-        )}
+        )} */}
       </article>{" "}
     </section>
   )

@@ -51,12 +51,30 @@ const getPage = async (pageId) => {
 
 
 export default factories.createCoreController('api::landing-page.landing-page', ({ strapi }) => ({
+  async find(ctx) {
+    const { sanitize, validate } = strapi.contentAPI;
+    const contentType = strapi.contentType('api::landing-page.landing-page');
+    await validate.query(ctx.query, contentType, { auth: ctx.state.auth });
+    const sanitizedQueryParams = await sanitize.query({
+      populate: { program: { populate: { image: true } } },
+      status: ctx.query.status === "draft" ? "draft" : "published",
+    }, contentType, { auth: ctx.state.auth });
+
+    const documents: any = await strapi.documents(contentType.uid).findMany(sanitizedQueryParams);
+
+    try {
+      return await sanitize.output(documents, contentType, { auth: ctx.state.auth });
+    }
+    catch (err) {
+      ctx.body = err;
+    }
+  },
   async findOne(ctx) {
     const { sanitize, validate } = strapi.contentAPI;
     const contentType = strapi.contentType('api::landing-page.landing-page');
     await validate.query(ctx.query, contentType, { auth: ctx.state.auth });
     const sanitizedQueryParams = await sanitize.query({
-      populate: { program_direct_link: { populate: { program: true } } },
+      populate: { program: { populate: { image: true } } },
       filters: {
         slug: {
           $eq: ctx.params.slug,

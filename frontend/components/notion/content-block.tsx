@@ -28,6 +28,51 @@ export const RenderBlocks: React.FC<RenderBlocksProps> = ({ blocks }) => {
 
   if (!blocks || blocks.length === 0) return null
 
+  // Function to detect YouTube URLs and extract video ID
+  const getYouTubeEmbedUrl = (url: string): string | null => {
+    const regExp =
+      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/
+    const match = url.match(regExp)
+    return match && match[2].length === 11
+      ? `https://www.youtube.com/embed/${match[2]}`
+      : null
+  }
+
+  // Function to detect Vimeo URLs and extract video ID
+  const getVimeoEmbedUrl = (url: string): string | null => {
+    const regExp =
+      /vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^/]*)\/videos\/|album\/(?:\d+)\/video\/|)(\d+)(?:$|\/|\?)/
+    const match = url.match(regExp)
+    return match ? `https://player.vimeo.com/video/${match[1]}` : null
+  }
+
+  // Function to get background color class based on Notion color
+  const getColorClass = (color: string): string => {
+    const colorMap: Record<string, string> = {
+      blue: "bg-blue-100",
+      brown: "bg-amber-100",
+      gray: "bg-gray-100",
+      green: "bg-green-100",
+      orange: "bg-orange-100",
+      pink: "bg-pink-100",
+      purple: "bg-purple-100",
+      red: "bg-red-100",
+      yellow: "bg-yellow-100",
+      blue_background: "bg-blue-100",
+      brown_background: "bg-amber-100",
+      gray_background: "bg-gray-100",
+      green_background: "bg-green-100",
+      orange_background: "bg-orange-100",
+      pink_background: "bg-pink-100",
+      purple_background: "bg-purple-100",
+      red_background: "bg-red-100",
+      yellow_background: "bg-yellow-100",
+      default: "bg-gray-50",
+    }
+
+    return colorMap[color] || colorMap.default
+  }
+
   // Function to parse shortcodes in text content
   const parseShortcodes = (content: string) => {
     // Array to hold all elements (text and components)
@@ -183,6 +228,83 @@ export const RenderBlocks: React.FC<RenderBlocksProps> = ({ blocks }) => {
               </blockquote>
             )
 
+          case "callout":
+            try {
+              // Extract callout properties with fallbacks
+              const calloutBlock = block.callout || {}
+              const calloutColor = calloutBlock.color || "default"
+              const colorClass = getColorClass(calloutColor)
+              const calloutIcon = calloutBlock.icon || {}
+
+              // Get callout text content
+              let calloutText = []
+              if (Array.isArray(calloutBlock.rich_text)) {
+                calloutText = calloutBlock.rich_text
+              } else if (calloutBlock.text && calloutBlock.text.content) {
+                calloutText = [
+                  {
+                    text: { content: calloutBlock.text.content },
+                    annotations: {},
+                  },
+                ]
+              }
+
+              // Check for children in different possible locations
+              const hasChildren =
+                block.has_children || calloutBlock.has_children
+              const children = block.children || calloutBlock.children || []
+
+              return (
+                <div
+                  key={id}
+                  className={`flex p-4 my-4 items-center rounded-md ${colorClass}`}
+                >
+                  <div className="mr-4 flex-shrink-0">
+                    {calloutIcon.type === "emoji" ? (
+                      <span className="text-2xl">{calloutIcon.emoji}</span>
+                    ) : calloutIcon.type === "external" &&
+                      calloutIcon.external?.url ? (
+                      <img
+                        src={calloutIcon.external.url || "/placeholder.svg"}
+                        alt="Callout icon"
+                        className="w-6 h-6 object-contain"
+                      />
+                    ) : calloutIcon.type === "file" && calloutIcon.file?.url ? (
+                      <img
+                        src={calloutIcon.file.url || "/placeholder.svg"}
+                        alt="Callout icon"
+                        className="w-6 h-6 object-contain"
+                      />
+                    ) : (
+                      // Default icon if none provided
+                      <span className="text-2xl">💡</span>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    {calloutText.length > 0 && (
+                      <SpanText id={`${id}-callout`} text={calloutText} />
+                    )}
+
+                    {hasChildren && children.length > 0 && (
+                      <div className="mt-3 pl-2 border-l-2 border-gray-200">
+                        <RenderBlocks blocks={children} />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )
+            } catch (error) {
+              console.error("Error rendering callout:", error, block)
+              return (
+                <div
+                  key={id}
+                  className="p-4 my-4 rounded-md bg-red-50 text-red-800"
+                >
+                  Error rendering callout block
+                </div>
+              )
+            }
+
           case "bulleted_list_item":
           case "numbered_list_item":
             return <ListItem key={id} value={block[type]} id={id} />
@@ -215,6 +337,59 @@ export const RenderBlocks: React.FC<RenderBlocksProps> = ({ blocks }) => {
                 />
                 {caption && (
                   <figcaption className="mt-5"> {caption} </figcaption>
+                )}
+              </figure>
+            )
+
+          case "video":
+            const videoBlock = block.video
+            const videoUrl =
+              videoBlock.type === "external"
+                ? videoBlock.external.url
+                : videoBlock.file.url
+            const videoCaption = videoBlock.caption?.length
+              ? videoBlock.caption[0].plain_text
+              : ""
+
+            // Check if it's a YouTube or Vimeo URL
+            const youtubeEmbedUrl = getYouTubeEmbedUrl(videoUrl)
+            const vimeoEmbedUrl = getVimeoEmbedUrl(videoUrl)
+
+            return (
+              <figure className="my-3 w-full" key={id}>
+                {youtubeEmbedUrl ? (
+                  <div className="aspect-video w-full">
+                    <iframe
+                      src={youtubeEmbedUrl}
+                      className="w-full h-full rounded-lg shadow-lg"
+                      title={videoCaption || "YouTube video"}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                ) : vimeoEmbedUrl ? (
+                  <div className="aspect-video w-full">
+                    <iframe
+                      src={vimeoEmbedUrl}
+                      className="w-full h-full rounded-lg shadow-lg"
+                      title={videoCaption || "Vimeo video"}
+                      frameBorder="0"
+                      allow="autoplay; fullscreen; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                ) : (
+                  <video
+                    src={videoUrl}
+                    controls
+                    className="w-full max-h-[85vh] shadow-lg rounded-lg"
+                  />
+                )}
+                {videoCaption && (
+                  <figcaption className="mt-2 text-sm text-gray-500">
+                    {videoCaption}
+                  </figcaption>
                 )}
               </figure>
             )
@@ -331,17 +506,17 @@ const SpanText: React.FC<{ text: any[]; id?: string }> = ({ text, id }) => {
           <span
             key={`${id}-${i}`}
             className={[
-              annotations.bold ? "font-bold" : "",
-              annotations.code
+              annotations?.bold ? "font-bold" : "",
+              annotations?.code
                 ? "bg-gray-100 p-1 font-mono text-sm rounded-md"
                 : "",
-              annotations.italic ? "italic" : "",
-              annotations.strikethrough ? "line-through" : "",
-              annotations.underline ? "underline" : "",
+              annotations?.italic ? "italic" : "",
+              annotations?.strikethrough ? "line-through" : "",
+              annotations?.underline ? "underline" : "",
             ].join(" ")}
             style={
-              annotations.color !== "default"
-                ? { color: annotations.color }
+              annotations?.color !== "default"
+                ? { color: annotations?.color }
                 : {}
             }
           >

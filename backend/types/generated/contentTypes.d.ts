@@ -391,10 +391,7 @@ export interface ApiLandingPageLandingPage extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     notion_id: Schema.Attribute.String;
-    program_direct_link: Schema.Attribute.Component<
-      'landing-page.program-link',
-      false
-    >;
+    program: Schema.Attribute.Relation<'oneToOne', 'api::program.program'>;
     publishedAt: Schema.Attribute.DateTime;
     slug: Schema.Attribute.UID<'title'>;
     title: Schema.Attribute.String;

@@ -18,7 +18,11 @@ import {
 import Link from "next/link"
 
 export default async function Home() {
-  const programs = await fetchCMS({ path: "programs", tags: ["programs"] })
+  const landings = await fetchCMS({
+    path: "landing-pages",
+    tags: ["landing-pages"],
+  })
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -105,7 +109,7 @@ export default async function Home() {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {programs.map((program: any) => (
+          {landings.map(({ slug, program }: any) => (
             <ProgramCard
               key={program.id}
               title={program.title}
@@ -115,7 +119,7 @@ export default async function Home() {
               price={program.price}
               category="Sport & bien-être"
               popular={true}
-              link={`/checkout/${program.documentId}`}
+              link={`/${slug}`}
             />
           ))}
           <CtaProgramCard />

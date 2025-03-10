@@ -21,10 +21,10 @@
       "type": "uid",
       "targetField": "title"
     },
-    "program_direct_link": {
-      "type": "component",
-      "repeatable": false,
-      "component": "landing-page.program-link"
+    "program": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::program.program"
     }
   }
 }

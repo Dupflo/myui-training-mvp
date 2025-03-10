@@ -7,6 +7,7 @@ export async function POST(req: Request) {
   switch (model) {
     case 'landing-page':
       revalidateTag(`landing-page:${entry.slug}`)
+      revalidateTag(`landing-pages`)
       console.info(`landing-page ${entry.slug} revalidée`)
       break
     case 'program':

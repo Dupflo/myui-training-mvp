@@ -14,4 +14,10 @@ export default {
       })
     ctx.body = response
   },
+  findContact: async (ctx, next) => {
+    const response = await strapi
+      .service("api::transactional.transactional")
+      .getContact(ctx.request.body.email, ctx.request.body.api_key)
+    ctx.body = response
+  },
 }

@@ -9,5 +9,15 @@ export default {
         middlewares: [],
       },
     },
+    {
+      method: 'POST',
+      path: '/transactional/contact',
+      handler: 'transactional.findContact',
+      config: {
+        policies: [],
+        middlewares: [],
+        auth: false
+      },
+    },
   ],
 };

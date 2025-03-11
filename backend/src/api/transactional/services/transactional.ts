@@ -21,7 +21,21 @@ export default {
   //     console.error(error)
   //   }
   // },
-  async addEmailToUserList({ name, email, organization, listId, tags, custom_key }: { name: string, email: string, organization: string, listId: string, tags?: string[], custom_key?: string }) {
+  async getContact(email: string, api_key: string) {
+    try {
+      const brevo = require('@getbrevo/brevo');
+
+      let apiInstance = new brevo.ContactsApi()
+      let apiKey = apiInstance.authentications['apiKey'];
+      apiKey.apiKey = api_key ?? process.env.BREVO_API_KEY;
+
+      const existingContact = await apiInstance.getContactInfo(email);
+      return existingContact
+    } catch (error) {
+      return error
+    }
+  },
+  async addEmailToUserList({ name, email, organization, listId, tags, custom_key }: { name: string, email: string, organization: string, listId: string, tags?: string, custom_key?: string }) {
     const brevo = require('@getbrevo/brevo');
     let apiInstance = new brevo.ContactsApi();
 
@@ -64,7 +78,7 @@ export default {
                 "PRENOM": splittedName[0],
                 "NOM": splittedName[1],
                 "ORGANIZATION": organization,
-                "TAGS": tags && [...existingContact.body.attributes?.TAGS, tags]
+                "TAGS": existingContact.body.attributes?.TAGS ? [...existingContact.body.attributes?.TAGS, tags] : tags ? [tags] : undefined
               }
             });
             console.info(`Contact ${email} added to list ${listId}`);

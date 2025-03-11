@@ -77,6 +77,9 @@ export default factories.createCoreController('api::program.program', ({ strapi 
           quantity: 1,
         },
       ],
+      invoice_creation: {
+        enabled: true
+      },
       mode: 'payment',
     };
 

@@ -31,6 +31,7 @@ export default {
           const customer = await stripe.customers.create({
             name: `${event.params.data.firstname} ${event.params.data.lastname}`,
             email: event.params.data.email,
+            preferred_locales: ['fr'],
           })
           event.params.data.customer_id = customer.id
         }

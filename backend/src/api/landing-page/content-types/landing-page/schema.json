@@ -5,26 +5,45 @@
     "singularName": "landing-page",
     "pluralName": "landing-pages",
     "displayName": "Landing Page",
-    "description": ""
+    "description": "Pages de vente modulables pour les programmes"
   },
   "options": {
     "draftAndPublish": true
   },
   "attributes": {
     "title": {
-      "type": "string"
-    },
-    "notion_id": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "slug": {
       "type": "uid",
-      "targetField": "title"
+      "targetField": "title",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "content": {
+      "type": "json",
+      "required": false
     },
     "program": {
       "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::program.program"
+      "relation": "manyToOne",
+      "target": "api::program.program",
+      "inversedBy": "landing_pages"
+    },
+    "coverImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "seoTitle": {
+      "type": "string"
+    },
+    "seoDescription": {
+      "type": "text"
     }
   }
 }

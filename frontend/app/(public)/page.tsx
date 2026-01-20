@@ -109,17 +109,17 @@ export default async function Home() {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {landings.map(({ slug, program }: any) => (
+          {landings?.map((program: any) => (
             <ProgramCard
               key={program.id}
               title={program.title}
               description={program.description}
-              imageUrl={program.image.url}
+              imageUrl={program.coverImage?.url}
               author="KD Training"
               price={program.price}
               category="Sport & bien-être"
               popular={true}
-              link={`/${slug}`}
+              link={`/${program.slug}`}
             />
           ))}
           <CtaProgramCard />

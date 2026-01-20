@@ -1,58 +1,94 @@
-import { RenderBlocks } from "@/components/notion/content-block"
-import { fetchCMS } from "@/utils/fetchers"
-import { notFound } from "next/navigation"
+import { getLandingPageBySlug } from '@/app/(app)/app/actions/landing-page'
+import { PageRenderer } from '@/components/page-builder'
+import { Button } from '@/components/ui/button'
+import { Metadata } from 'next'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
 
-export default async function NotionPage({
-  params,
-}: {
-  params: { slug: Promise<string> }
-}) {
+interface LandingPageProps {
+  params: Promise<{ slug: string }>
+}
+
+// Génération des métadonnées SEO
+export async function generateMetadata({ params }: LandingPageProps): Promise<Metadata> {
   const { slug } = await params
-  const page = await fetchCMS({
-    path: `landing-pages/${slug}`,
-    tags: [`landing-page:${slug}`],
-    revalidate: 1800,
-  })
+  const page = await getLandingPageBySlug(slug)
 
-  if (!page.content) notFound()
+  if (!page) {
+    return {
+      title: 'Page non trouvée',
+    }
+  }
+
+  return {
+    title: page.seoTitle || page.title,
+    description: page.seoDescription || page.description,
+    openGraph: {
+      title: page.seoTitle || page.title,
+      description: page.seoDescription || page.description,
+      images: page.coverImage?.url ? [page.coverImage.url] : undefined,
+    },
+  }
+}
+
+export default async function LandingPage({ params }: LandingPageProps) {
+  const { slug } = await params
+  const page = await getLandingPageBySlug(slug)
+
+  // Page non trouvée ou non publiée
+  if (!page) {
+    notFound()
+  }
 
   return (
-    <section>
-      {page.content.info.cover && (
-        <div className="flex relative overflow-hidden items-center justify-center h-[30vh] mb-10">
-          <h1 className="z-10 relative text-3xl font-bold tracking-tight text-white md:text-5xl">
-            {page.content.info.properties.title.title[0].plain_text}
-          </h1>
+    <main className="min-h-screen">
+      {/* Cover Image (optionnel) */}
+      {page.coverImage?.url && (
+        <div className="relative h-[40vh] min-h-[300px] overflow-hidden">
           <img
-            src={
-              page.content.info.cover.file?.url ||
-              page.content.info.cover.external?.url
-            }
-            alt="Cover Image"
-            className="w-full absolute object-cover object-bottom right-0 top-0 m-auto left-0 bottom-0"
+            src={page.coverImage.url}
+            alt={page.coverImage.alternativeText || page.title}
+            className="w-full h-full object-cover"
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-8">
+            <div className="container max-w-4xl">
+              <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
+                {page.title}
+              </h1>
+            </div>
+          </div>
         </div>
       )}
-      <article className="prose-xl p-4 prose-p:my-2 prose-h3:my-5 prose-li:my-1.5 mx-auto mb-16 flex w-full max-w-4xl flex-col items-start justify-center">
-        {!page.content.info.cover && (
-          <h1 className="z-10 relative my-20 text-3xl font-bold tracking-tight text-black md:text-5xl">
-            {page.content.info.properties.title.title[0].plain_text}
+
+      {/* Contenu de la page */}
+      <article className="container max-w-4xl py-12 px-4">
+        {/* Titre si pas de cover image */}
+        {!page.coverImage?.url && (
+          <h1 className="text-4xl md:text-5xl font-bold mb-8 text-center">
+            {page.title}
           </h1>
         )}
 
-        <RenderBlocks blocks={page.content.content} />
-        {/* {page.program_direct_link && (
-          <div className="bg-slate-900 fixed w-full flex items-center justify-center bottom-0 left-0 text-white  p-5">
-            <Link
-              href={`/checkout/${page.program_direct_link.program.documentId}`}
-            >
-              <Button variant="destructive" size="lg">
-                {page.program_direct_link.title}
-              </Button>
-            </Link>
+        {/* Rendu des modules */}
+        <PageRenderer content={page.content} />
+
+        {/* CTA vers le programme si disponible */}
+        {page.program && (
+          <div className="mt-16 pt-8 border-t">
+            <div className="text-center">
+              <p className="text-muted-foreground mb-4">
+                Intéressé par ce programme ?
+              </p>
+              <Link href={`/checkout/${page.program.documentId}`}>
+                <Button size="lg">
+                  Accéder à la formation
+                </Button>
+              </Link>
+            </div>
           </div>
-        )} */}
-      </article>{" "}
-    </section>
+        )}
+      </article>
+    </main>
   )
 }

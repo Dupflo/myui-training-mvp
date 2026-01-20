@@ -53,6 +53,17 @@
       "type": "component",
       "repeatable": false,
       "component": "transactional.brevo"
+    },
+    "landing_pages": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::landing-page.landing-page",
+      "mappedBy": "program"
+    },
+    "creator": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
     }
   }
 }

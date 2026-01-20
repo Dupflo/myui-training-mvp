@@ -22,7 +22,6 @@ export default function ProgramCard({
   description,
   imageUrl,
   author,
-  price,
   category,
   popular = false,
   link,

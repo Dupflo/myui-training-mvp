@@ -70,7 +70,6 @@ export default factories.createCoreController('api::program.program', ({ strapi 
       success_url: `${process.env.FRONTEND_URL}/checkout/${ctx.params.id}?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.FRONTEND_URL}/#programs`,
       allow_promotion_codes: true,
-      customer_email: email,
       line_items: [
         {
           price: defaultPrice.id,
@@ -86,8 +85,11 @@ export default factories.createCoreController('api::program.program', ({ strapi 
     if (customerId) {
       sessionData.customer = customerId
     }
-    else if (email) {
-      sessionData.customer_email = email
+    else {
+      // Nouvel acheteur / client non connecté : Stripe collecte l'email sur sa
+      // page. customer_creation "always" garantit un customer -> le webhook
+      // récupère toujours l'email (réconciliation par email côté webhook).
+      if (email) sessionData.customer_email = email
       sessionData.customer_creation = "always"
     }
 
@@ -99,7 +101,7 @@ export default factories.createCoreController('api::program.program', ({ strapi 
     if (promotion_code) {
       sessionData.allow_promotion_codes = undefined
       sessionData.discounts = []
-      sessionData.discouns.push({ promotion_code })
+      sessionData.discounts.push({ promotion_code })
     }
     // Ajouter payment_intent_data uniquement si program.connected_accounts > 0
     if (program.connected_accounts.length > 0) {

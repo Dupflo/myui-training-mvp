@@ -31,24 +31,34 @@ export default {
             expand: ['line_items']
           });
 
+          // Email saisi par l'acheteur (sur la page Stripe ou prérempli)
+          const customer = (await stripe.customers.retrieve(
+            session.object.customer
+          )) as any
+          const email = (expandedSession.customer_details?.email || customer?.email)?.toLowerCase()
+
+          // Retrouve l'user par customer_id OU email. Indispensable depuis la
+          // suppression de l'étape "email" : Stripe crée un nouveau customer pour
+          // un client déjà existant, donc le customer_id seul ne suffit plus.
           user = await strapi.documents("plugin::users-permissions.user").findFirst({
-            filters: { customer_id: session.object.customer },
+            filters: {
+              $or: [
+                { customer_id: session.object.customer },
+                ...(email ? [{ email }] : []),
+              ]
+            },
             populate: { programs: true }
           });
 
           if (!user) {
-            const customer = (await stripe.customers.retrieve(
-              session.object.customer
-            )) as any
-
             const tempPassword = generatePassword();
             const splittedName = customer.name?.split(" ")
             user = await strapi.documents('plugin::users-permissions.user').create({
               data: {
-                username: customer.email,
+                username: email,
                 firstname: splittedName?.[0],
                 lastname: splittedName?.[1],
-                email: customer.email,
+                email,
                 customer_id: customer.id,
                 password: tempPassword,
                 temp_password: tempPassword,
@@ -71,10 +81,17 @@ export default {
 
           const program: any = await strapi.documents(programContentType.uid).findFirst(sanitizedQueryParams);
 
+          // Idempotence : ne rattache le programme que s'il n'y est pas déjà
+          const alreadyHasProgram = (user.programs || []).some((p: any) => p.id === program.id)
+
           await strapi.documents("plugin::users-permissions.user").update({
             documentId: user.documentId,
             data: {
-              programs: [...(user.programs || []), { id: program.id }] // Ajout de l'ID du programme sous forme d'objet
+              // Réconcilie le customer_id si Stripe en a généré un nouveau
+              customer_id: session.object.customer,
+              programs: alreadyHasProgram
+                ? undefined
+                : [...(user.programs || []), { id: program.id }] // Ajout de l'ID du programme sous forme d'objet
             }
           });
 

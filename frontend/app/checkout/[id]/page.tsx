@@ -39,6 +39,19 @@ export default async function CheckoutPage({
     if (checkoutPage.url) {
       redirect(checkoutPage.url)
     }
+  } else if (!session_id) {
+    // Acheteur non connecté et pas de retour de paiement : on l'envoie
+    // directement sur Stripe (l'étape "saisir votre email" est supprimée).
+    // Stripe collecte l'email sur sa page ; le webhook réconcilie ensuite.
+    const checkoutPage = await generateCheckoutPage({
+      programId: id,
+      coupon,
+      promotion_code,
+    })
+
+    if (checkoutPage.url) {
+      redirect(checkoutPage.url)
+    }
   }
 
   return (

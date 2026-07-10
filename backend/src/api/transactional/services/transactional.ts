@@ -51,7 +51,7 @@ export default {
         "PRENOM": splittedName[0],
         "NOM": splittedName[1],
         "ORGANIZATION": organization,
-        "TAGS": tags && [tags]
+        "TAGS": tags ? [tags] : undefined
       };
 
       // Tente de créer le contact
@@ -66,23 +66,27 @@ export default {
           // Récupérer l'ID du contact existant
           const existingContact = await apiInstance.getContactInfo(email);
           const contactId = existingContact.body.id;
-          const existingLists = existingContact.listIds || [];
+          const existingLists = existingContact.body.listIds || [];
+          const existingTags = existingContact.body.attributes?.TAGS || [];
 
-          // Vérifier si la liste est déjà assignée
-          if (!existingLists.includes(listId)) {
-            const splittedName = name.split(' ');
-            // Ajouter le contact à la nouvelle liste
-            await apiInstance.updateContact(contactId, {
-              listIds: [...existingLists, listId],
-              attributes: {
-                "PRENOM": splittedName[0],
-                "NOM": splittedName[1],
-                "ORGANIZATION": organization,
-                "TAGS": existingContact.body.attributes?.TAGS ? [...existingContact.body.attributes?.TAGS, tags] : tags ? [tags] : undefined
-              }
-            });
-            console.info(`Contact ${email} added to list ${listId}`);
-          }
+          // Ajouter la liste si elle n'est pas déjà assignée
+          const listIds = existingLists.includes(listId) ? existingLists : [...existingLists, listId];
+
+          // Ajouter le tag s'il n'est pas déjà présent (attribution indépendante de la liste)
+          const updatedTags = tags && !existingTags.includes(tags) ? [...existingTags, tags] : existingTags;
+
+          const splittedName = name.split(' ');
+          // Toujours mettre à jour le contact : liste ET tags
+          await apiInstance.updateContact(contactId, {
+            listIds,
+            attributes: {
+              "PRENOM": splittedName[0],
+              "NOM": splittedName[1],
+              "ORGANIZATION": organization,
+              "TAGS": updatedTags.length ? updatedTags : undefined
+            }
+          });
+          console.info(`Contact ${email} updated (list ${listId}, tag ${tags})`);
 
           return { message: `Contact updated and added to list ${listId}` };
         } catch (updateError) {

@@ -14,7 +14,8 @@
       "type": "integer"
     },
     "brevo_key": {
-      "type": "string"
+      "type": "string",
+      "private": true
     }
   }
 }

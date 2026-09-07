@@ -47,10 +47,28 @@ const groupListItems = (blocks: Block[]): BlockGroup[] =>
     return groups
   }, [])
 
+// Certaines pages Notion pointent encore vers l'ancien tunnel
+// /register?redirectTo=/programs/<id>/buy : cette route n'existe plus et renvoie
+// un 404. On la réécrit vers le tunnel actuel.
+// Tout lien d'achat est ramené à la même forme relative /checkout/<id> : les
+// morceaux d'un même CTA se recollent alors même s'ils ont été saisis avec des
+// URLs différentes, et la navigation reste interne.
+const normalizeLink = (url: string) => {
+  const redirect = url.match(/[?&]redirectTo=([^&]+)/)
+  if (redirect) {
+    const target = decodeURIComponent(redirect[1]).match(
+      /^\/programs\/([^/]+)\/buy\/?$/
+    )
+    if (target) return `/checkout/${target[1]}`
+  }
+
+  const checkout = url.match(/\/checkout\/([^/?#]+)/)
+  return checkout ? `/checkout/${checkout[1]}` : url
+}
+
 // Un lien Notion qui pointe vers le tunnel d'achat est rendu comme un bouton et
 // non comme un lien souligné perdu dans le texte.
-const isCheckoutLink = (url: string) =>
-  /\/checkout\//.test(url) || /redirectTo=/.test(url)
+const isCheckoutLink = (url: string) => /\/checkout\//.test(url)
 
 export const RenderBlocks: React.FC<RenderBlocksProps> = ({ blocks }) => {
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(
@@ -575,7 +593,8 @@ const SpanText: React.FC<{ text: any[]; id?: string }> = ({ text, id }) => {
   // On les recolle pour n'avoir qu'un seul lien — et un seul bouton d'achat.
   const segments = text.reduce<{ url: string | null; parts: any[] }[]>(
     (acc, value) => {
-      const url = value.text?.link?.url ?? null
+      const rawUrl = value.text?.link?.url
+      const url = rawUrl ? normalizeLink(rawUrl) : null
       const last = acc[acc.length - 1]
       if (last && last.url === url) last.parts.push(value)
       else acc.push({ url, parts: [value] })
@@ -594,9 +613,17 @@ const SpanText: React.FC<{ text: any[]; id?: string }> = ({ text, id }) => {
         if (!segment.url) return <span key={`${id}-${i}`}>{content}</span>
 
         if (isCheckoutLink(segment.url)) {
+          // Notion peut couper "👉" et le libellé en deux segments collés :
+          // on rétablit l'espace manquant au recollage.
           const label = segment.parts
             .map((value: any) => value.text?.content ?? value.plain_text ?? "")
-            .join("")
+            .reduce(
+              (acc: string, part: string) =>
+                acc && !/\s$/.test(acc) && !/^\s/.test(part)
+                  ? `${acc} ${part}`
+                  : acc + part,
+              ""
+            )
             .trim()
 
           return (

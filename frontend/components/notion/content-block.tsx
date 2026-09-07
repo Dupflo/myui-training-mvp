@@ -21,6 +21,37 @@ interface RenderBlocksProps {
   blocks: Block[]
 }
 
+type BlockGroup =
+  | { kind: "block"; block: Block }
+  | { kind: "list"; type: string; items: Block[] }
+
+// Notion renvoie les puces à plat : sans ce regroupement les <li> se retrouvent
+// orphelins (pas de <ul>), donc sans puces ni indentation.
+const groupListItems = (blocks: Block[]): BlockGroup[] =>
+  blocks.reduce<BlockGroup[]>((groups, block) => {
+    const isListItem =
+      block.type === "bulleted_list_item" ||
+      block.type === "numbered_list_item"
+
+    if (!isListItem) {
+      groups.push({ kind: "block", block })
+      return groups
+    }
+
+    const last = groups[groups.length - 1]
+    if (last?.kind === "list" && last.type === block.type) {
+      last.items.push(block)
+    } else {
+      groups.push({ kind: "list", type: block.type, items: [block] })
+    }
+    return groups
+  }, [])
+
+// Un lien Notion qui pointe vers le tunnel d'achat est rendu comme un bouton et
+// non comme un lien souligné perdu dans le texte.
+const isCheckoutLink = (url: string) =>
+  /\/checkout\//.test(url) || /redirectTo=/.test(url)
+
 export const RenderBlocks: React.FC<RenderBlocksProps> = ({ blocks }) => {
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(
     null
@@ -164,7 +195,31 @@ export const RenderBlocks: React.FC<RenderBlocksProps> = ({ blocks }) => {
         />
       )}
 
-      {blocks.map((block) => {
+      {groupListItems(blocks).map((group) => {
+        if (group.kind === "list") {
+          const ListTag = group.type === "numbered_list_item" ? "ol" : "ul"
+          return (
+            <ListTag
+              key={`${group.items[0].id}-list`}
+              className={`my-4 pl-6 ${
+                group.type === "numbered_list_item"
+                  ? "list-decimal"
+                  : "list-disc"
+              }`}
+            >
+              {group.items.map((item) => (
+                <ListItem
+                  key={item.id}
+                  id={item.id}
+                  value={item[group.type]}
+                  block={item}
+                />
+              ))}
+            </ListTag>
+          )
+        }
+
+        const { block } = group
         const { type, id } = block
 
         switch (type) {
@@ -304,10 +359,6 @@ export const RenderBlocks: React.FC<RenderBlocksProps> = ({ blocks }) => {
                 </div>
               )
             }
-
-          case "bulleted_list_item":
-          case "numbered_list_item":
-            return <ListItem key={id} value={block[type]} id={id} />
 
           case "to_do":
             return <ToDo key={id} value={block.to_do} id={id} />
@@ -495,39 +546,76 @@ const ColumnList: React.FC<{ block: Block }> = ({ block }) => {
   )
 }
 
+const RichTextSpan: React.FC<{ value: any; id?: string }> = ({ value, id }) => {
+  const { annotations, text } = value
+
+  return (
+    <span
+      key={id}
+      className={[
+        annotations?.bold ? "font-bold" : "",
+        annotations?.code ? "bg-gray-100 p-1 font-mono text-sm rounded-md" : "",
+        annotations?.italic ? "italic" : "",
+        annotations?.strikethrough ? "line-through" : "",
+        annotations?.underline ? "underline" : "",
+      ].join(" ")}
+      style={
+        annotations?.color !== "default" ? { color: annotations?.color } : {}
+      }
+    >
+      {text.content}
+    </span>
+  )
+}
+
 const SpanText: React.FC<{ text: any[]; id?: string }> = ({ text, id }) => {
   if (!text) return null
 
+  // Notion découpe un même lien en plusieurs segments (l'emoji, le texte...).
+  // On les recolle pour n'avoir qu'un seul lien — et un seul bouton d'achat.
+  const segments = text.reduce<{ url: string | null; parts: any[] }[]>(
+    (acc, value) => {
+      const url = value.text?.link?.url ?? null
+      const last = acc[acc.length - 1]
+      if (last && last.url === url) last.parts.push(value)
+      else acc.push({ url, parts: [value] })
+      return acc
+    },
+    []
+  )
+
   return (
     <>
-      {text.map((value, i) => {
-        const { annotations, text } = value
+      {segments.map((segment, i) => {
+        const content = segment.parts.map((value, j) => (
+          <RichTextSpan key={`${id}-${i}-${j}`} value={value} id={`${id}-${i}-${j}`} />
+        ))
+
+        if (!segment.url) return <span key={`${id}-${i}`}>{content}</span>
+
+        if (isCheckoutLink(segment.url)) {
+          const label = segment.parts
+            .map((value: any) => value.text?.content ?? value.plain_text ?? "")
+            .join("")
+            .trim()
+
+          return (
+            <CustomButton
+              key={`${id}-${i}`}
+              text={label}
+              link={segment.url}
+              variant="cta"
+              size="lg"
+              width="full"
+              openInNewTab={false}
+            />
+          )
+        }
+
         return (
-          <span
-            key={`${id}-${i}`}
-            className={[
-              annotations?.bold ? "font-bold" : "",
-              annotations?.code
-                ? "bg-gray-100 p-1 font-mono text-sm rounded-md"
-                : "",
-              annotations?.italic ? "italic" : "",
-              annotations?.strikethrough ? "line-through" : "",
-              annotations?.underline ? "underline" : "",
-            ].join(" ")}
-            style={
-              annotations?.color !== "default"
-                ? { color: annotations?.color }
-                : {}
-            }
-          >
-            {text.link ? (
-              <a href={text.link.url} className="underline">
-                {text.content}
-              </a>
-            ) : (
-              text.content
-            )}
-          </span>
+          <a key={`${id}-${i}`} href={segment.url} className="underline">
+            {content}
+          </a>
         )
       })}
     </>
@@ -540,9 +628,15 @@ const Text: React.FC<{ text: any[]; id: string }> = ({ text, id }) => (
   </p>
 )
 
-const ListItem: React.FC<{ value: any; id: string }> = ({ value, id }) => (
+const ListItem: React.FC<{ value: any; id: string; block?: Block }> = ({
+  value,
+  id,
+  block,
+}) => (
   <li>
     <SpanText text={value.rich_text} id={id} />
+    {/* sans ça les sous-puces saisies dans Notion disparaissent du rendu */}
+    {block?.children?.length ? <RenderBlocks blocks={block.children} /> : null}
   </li>
 )
 

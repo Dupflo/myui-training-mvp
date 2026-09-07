@@ -5,10 +5,12 @@ import type React from "react"
 interface CustomButtonProps {
   text: string
   link?: string
-  variant?: "primary" | "secondary" | "outline" | "ghost"
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "cta"
   size?: "sm" | "md" | "lg"
   width?: "auto" | "full"
   color?: string
+  /** false pour les liens internes (checkout) : on reste dans le même onglet */
+  openInNewTab?: boolean
   onClick?: () => void
 }
 
@@ -19,11 +21,13 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   size = "md",
   width = "auto",
   color,
+  openInNewTab = true,
   onClick,
 }) => {
   // Base classes
+  // no-underline : sans ça la typo `prose` de la page souligne le texte du bouton
   const baseClasses =
-    "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50"
+    "inline-flex items-center justify-center rounded-md font-medium no-underline transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50"
 
   // Width classes
   const widthClasses = {
@@ -47,6 +51,8 @@ const CustomButton: React.FC<CustomButtonProps> = ({
     outline:
       "border border-gray-300 bg-transparent hover:bg-gray-100 focus-visible:ring-gray-500",
     ghost: "bg-transparent hover:bg-gray-100 focus-visible:ring-gray-500",
+    // bouton d'achat : contraste maximum, taille "on ne peut pas le rater"
+    cta: "bg-slate-900 text-white shadow-lg hover:bg-slate-800 focus-visible:ring-slate-700",
   }
 
   // Apply custom color if provided
@@ -73,8 +79,9 @@ const CustomButton: React.FC<CustomButtonProps> = ({
         href={link}
         className={className}
         style={style}
-        target="_blank"
-        rel="noopener noreferrer"
+        {...(openInNewTab
+          ? { target: "_blank", rel: "noopener noreferrer" }
+          : {})}
       >
         {text}
       </a>
